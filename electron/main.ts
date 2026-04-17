@@ -1,6 +1,11 @@
 import { app, BrowserWindow, ipcMain, nativeImage } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
+
+if (process.platform === 'darwin') {
+  app.name = 'Tudu'
+}
+
 import pkg from 'electron-updater'
 const { autoUpdater } = pkg
 import { initDatabase } from './db/index.js'
