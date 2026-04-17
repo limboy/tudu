@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, type ReactNode } from 'react'
 
 const LEFT_MIN = 200
-const LEFT_MAX = 400
-const RIGHT_MIN = 300
+const LEFT_MAX = 300
+const RIGHT_MIN = 340
 const RIGHT_MAX = 500
 
 export function ThreePane({

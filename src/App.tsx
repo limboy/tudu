@@ -45,7 +45,7 @@ export default function App() {
   const [leftOpen, setLeftOpen] = useState(true)
   const [rightOpen, setRightOpen] = useState(true)
   const [leftWidth, setLeftWidth] = useState(220)
-  const [rightWidth, setRightWidth] = useState(320)
+  const [rightWidth, setRightWidth] = useState(340)
 
   const openAdd = () => {
     if (selectedDeckId == null) return
