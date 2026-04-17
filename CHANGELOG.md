@@ -3,6 +3,16 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.10](https://github.com/limboy/tudu/compare/v0.1.9...v0.1.10) - 2026-04-17
+
+### Documentation
+
+- update CHANGELOG for v0.1.9 ([b75e0e0](https://github.com/limboy/tudu/commit/b75e0e055500730708c04b6feb248cdee4f98244))
+
+### Chores
+
+- set app name to Tudu on macOS in main process ([4c78823](https://github.com/limboy/tudu/commit/4c7882351cae03eef76ada8efd7fe0ae75a500e4))
+
 ## [v0.1.9](https://github.com/limboy/tudu/compare/v0.1.8...v0.1.9) - 2026-04-17
 
 ### Features
