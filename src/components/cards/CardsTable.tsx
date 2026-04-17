@@ -237,7 +237,14 @@ export function CardsTable({
               <TableCell className="w-[100px]">
                 <Badge variant={STATE_VARIANT[c.state]}>{STATE_LABEL[c.state]}</Badge>
               </TableCell>
-              <TableCell className="w-[120px] text-muted-foreground">
+              <TableCell
+                className={cn(
+                  'w-[120px]',
+                  c.due < Date.now()
+                    ? 'text-orange-600 dark:text-orange-400'
+                    : 'text-muted-foreground',
+                )}
+              >
                 {relativeFromNow(c.due)}
               </TableCell>
               {visibleColumns.created && (
