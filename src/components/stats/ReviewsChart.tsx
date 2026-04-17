@@ -36,7 +36,13 @@ export function ReviewsChart({
               labelFormatter={(d) => d}
               formatter={(v) => [String(v), 'reviews']}
             />
-            <Bar dataKey="count" fill="var(--primary)" radius={[2, 2, 0, 0]} />
+            <Bar
+              dataKey="count"
+              fill="var(--primary)"
+              radius={[2, 2, 0, 0]}
+              minPointSize={1}
+              background={{ fill: 'color-mix(in oklch, var(--foreground) 8%, transparent)', radius: [2, 2, 0, 0] }}
+            />
           </BarChart>
         </ResponsiveContainer>
       ) : (
