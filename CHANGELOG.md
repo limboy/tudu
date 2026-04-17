@@ -3,6 +3,22 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.3](https://github.com/limboy/tudu/compare/v0.1.2...v0.1.3) - 2026-04-17
+
+### Documentation
+
+- update CHANGELOG for v0.1.1 ([1fa136a](https://github.com/limboy/tudu/commit/1fa136a6736f33e4a7a3423a242ebc61501028f3))
+
+### Chores
+
+- revert local changes to CHANGELOG.md before merging release branch ([f92ec63](https://github.com/limboy/tudu/commit/f92ec631b19f78cf0d00181a48c8bad6d265c1ef))
+
+## [v0.1.2](https://github.com/limboy/tudu/compare/v0.1.1...v0.1.2) - 2026-04-17
+
+### Bug Fixes
+
+- **build:** correct electron-builder publish configuration ([be2627f](https://github.com/limboy/tudu/commit/be2627f1cdeb9d4721c943398bebe51209b41e26))
+
 ## [v0.1.1](https://github.com/limboy/tudu/releases/tag/v0.1.1) - 2026-04-17
 
 ### Features
