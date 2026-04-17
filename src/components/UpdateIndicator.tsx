@@ -37,7 +37,7 @@ export function UpdateIndicator() {
           <Button
             size="sm"
             variant="outline"
-            className="h-7 px-3 text-xs shrink-0 rounded-full border-amber-600 transition-all hover:scale-105 active:scale-95"
+            className="hover:bg-amber-100 hover:text-amber-600 h-7 px-3 text-xs shrink-0 rounded-full border-amber-600 transition-all"
             disabled={applying}
             onClick={handleApply}
           >
