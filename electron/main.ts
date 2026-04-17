@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, nativeImage } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { initDatabase } from './db/index.js'
@@ -18,18 +18,25 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
 let win: BrowserWindow | null = null
 
 function createWindow() {
+  const iconPath = path.join(process.env.APP_ROOT, 'assets/icon.png')
+  const icon = nativeImage.createFromPath(iconPath)
+
   win = new BrowserWindow({
     width: 1100,
     height: 720,
     minWidth: 640,
     minHeight: 480,
-    icon: path.join(process.env.VITE_PUBLIC!, 'electron-vite.svg'),
+    icon: icon,
     titleBarStyle: 'hiddenInset',
     trafficLightPosition: { x: 16, y: 14 },
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
     },
   })
+
+  if (process.platform === 'darwin') {
+    app.dock.setIcon(icon)
+  }
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)
