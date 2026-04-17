@@ -52,7 +52,7 @@ export function ThreePane({
             }
           />
           <aside
-            className="shrink-0 border-l bg-secondary/40 backdrop-blur-sm overflow-hidden"
+            className="shrink-0 border-l overflow-hidden"
             style={{ width: rightWidth }}
           >
             {right}
