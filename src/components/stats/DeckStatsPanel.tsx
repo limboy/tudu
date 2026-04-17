@@ -54,63 +54,43 @@ export function DeckStatsPanel({
         </TabsList>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 text-sm">
-        <TabsContent value="statistics" className="space-y-4 m-0">
-          <section>
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-              Counts
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              <StatCell label="New" value={stats.counts.new} />
-              <StatCell label="Learning" value={stats.counts.learning} />
-              <StatCell
-                label="Review"
-                value={stats.counts.review + stats.counts.relearning}
-              />
-            </div>
-          </section>
-
-          <Separator />
-
-          <section className="grid grid-cols-2 gap-2">
+      <div className="flex-1 overflow-y-auto p-4">
+        <TabsContent value="statistics" className="m-0 space-y-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            <StatCell label="New cards" value={stats.counts.new} />
+            <StatCell label="Learning" value={stats.counts.learning} />
+            <StatCell
+              label="To review"
+              value={stats.counts.review + stats.counts.relearning}
+            />
             <StatCell label="Due today" value={stats.dueToday} accent />
             <StatCell label="Next 7 days" value={stats.dueNext7} />
-          </section>
-
-          <Separator />
-
-          <section>
-            <div className="flex items-baseline justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Retention
-              </span>
-              <span className="tabular-nums text-base font-semibold">
-                {stats.retentionRate != null
+            <StatCell
+              label="Retention"
+              value={
+                stats.retentionRate != null
                   ? `${Math.round(stats.retentionRate * 100)}%`
-                  : '—'}
-              </span>
-            </div>
-            <div className="text-[11px] text-muted-foreground">
-              Good/Easy reviews over total, all time
-            </div>
-          </section>
+                  : '—'
+              }
+            />
+          </div>
 
-          <section>
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">
+          <div className="pt-2">
+            <div className="text-sm text-muted-foreground mb-3">
               Reviews · last 30 days
             </div>
             <ReviewsChart data={stats.reviewsLast30} />
-          </section>
+          </div>
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-4 m-0">
           <section className="space-y-2">
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <div className="text-[13px] font-medium text-foreground">
               Deck Settings
             </div>
             <div className="space-y-1">
-              <Label htmlFor="retention" className="text-xs">
-                Desired retention
+              <Label htmlFor="retention" className="text-xs text-muted-foreground block mb-2">
+                Desired retention (FSRS target, 0.70–0.99)
               </Label>
               <Input
                 id="retention"
@@ -124,11 +104,8 @@ export function DeckStatsPanel({
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') (e.currentTarget as HTMLInputElement).blur()
                 }}
-                className="h-8"
+                className="h-8 max-w-[200px]"
               />
-              <div className="text-[11px] text-muted-foreground">
-                FSRS target, 0.70–0.99
-              </div>
             </div>
           </section>
         </TabsContent>
@@ -137,25 +114,24 @@ export function DeckStatsPanel({
   )
 }
 
-
 function StatCell({
   label,
   value,
   accent,
 }: {
   label: string
-  value: number
+  value: number | string
   accent?: boolean
 }) {
   return (
-    <div className="rounded-md border bg-background p-2">
-      <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
+    <div className="rounded-xl bg-muted/60 p-3">
+      <div className="text-[13px] text-muted-foreground mb-1">
         {label}
       </div>
       <div
         className={
-          'text-lg font-semibold tabular-nums ' +
-          (accent && value > 0 ? 'text-primary' : '')
+          'text-base font-medium tabular-nums ' +
+          (accent && value && Number(value) > 0 ? 'text-primary' : 'text-foreground')
         }
       >
         {value}
