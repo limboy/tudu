@@ -1,7 +1,8 @@
 import { app, BrowserWindow, ipcMain, nativeImage } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
-import { autoUpdater } from 'electron-updater'
+import pkg from 'electron-updater'
+const { autoUpdater } = pkg
 import { initDatabase } from './db/index.js'
 import { registerIpc } from './ipc.js'
 
