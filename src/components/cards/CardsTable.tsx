@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MoreHorizontal } from 'lucide-react'
 import {
   DropdownMenu,
@@ -65,6 +65,8 @@ function relativeFromNow(ms: number): string {
   return diff < 0 ? `${d}d ${sign}` : `in ${d}d`
 }
 
+const STORAGE_KEY = 'tudu-visible-columns'
+
 export function CardsTable({
   cards,
   loading,
@@ -74,11 +76,25 @@ export function CardsTable({
   loading: boolean
   onRowClick: (card: Card) => void
 }) {
-  const [visibleColumns, setVisibleColumns] = useState({
-    reviewed: true,
-    difficulty: true,
-    retrievability: true,
+  const [visibleColumns, setVisibleColumns] = useState(() => {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      try {
+        return JSON.parse(saved)
+      } catch (e) {
+        // ignore
+      }
+    }
+    return {
+      reviewed: true,
+      difficulty: true,
+      retrievability: true,
+    }
   })
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(visibleColumns))
+  }, [visibleColumns])
 
   if (loading && cards.length === 0) {
     return (
