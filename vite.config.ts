@@ -8,6 +8,7 @@ import electron from 'vite-plugin-electron/simple'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
+  base: './',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -21,6 +22,7 @@ export default defineConfig({
         entry: 'electron/main.ts',
         vite: {
           build: {
+            outDir: 'dist',
             rollupOptions: {
               external: ['better-sqlite3'],
             },
@@ -29,7 +31,16 @@ export default defineConfig({
       },
       preload: {
         input: path.join(__dirname, 'electron/preload.ts'),
+        vite: {
+          build: {
+            outDir: 'dist',
+          },
+        },
       },
     }),
   ],
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+  },
 })
