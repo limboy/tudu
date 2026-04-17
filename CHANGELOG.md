@@ -3,6 +3,22 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.7](https://github.com/limboy/tudu/compare/v0.1.6...v0.1.7) - 2026-04-17
+
+### Chores
+
+- remove RELEASENOTES.md from release workflow checkout list ([bd73829](https://github.com/limboy/tudu/commit/bd738293872dc3ff0a8c5a69710291bc4f6c29ff))
+
+## [v0.1.6](https://github.com/limboy/tudu/compare/v0.1.5...v0.1.6) - 2026-04-17
+
+### Features
+
+- include RELEASENOTES.md in the automated release changelog generation and commit process ([cdcb038](https://github.com/limboy/tudu/commit/cdcb038ef69c409ef5659f4f87cc754cd035a1d8))
+
+### Documentation
+
+- update CHANGELOG for v0.1.5 ([51a9577](https://github.com/limboy/tudu/commit/51a957796c386277ea3c17881ea782b23b7e0840))
+
 ## [v0.1.5](https://github.com/limboy/tudu/compare/v0.1.4...v0.1.5) - 2026-04-17
 
 ### Refactoring
