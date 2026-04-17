@@ -164,31 +164,6 @@ function main() {
   const out = path.resolve(__dirname, '..', 'CHANGELOG.md');
   fs.writeFileSync(out, content);
   console.log(`Wrote ${out} (${sections.length} section${sections.length === 1 ? '' : 's'})`);
-
-  // Write RELEASENOTES.md (only the latest tagged release)
-  // we skip the "Unreleased" section if it exists at index 0
-  const releaseNotesIndex = unreleasedCommits.length && sections.length > 1 ? 1 : 0;
-  if (sections[releaseNotesIndex]) {
-    // For RELEASENOTES.md, we don't want the "## [v1.2.6](...)" header
-    // but rather just the content. Or maybe a simpler header.
-    // Let's strip the first line (the header) for GitHub Release Body
-    const lines = sections[releaseNotesIndex].split('\n');
-    const headerLine = lines[0]; // e.g. ## [v0.1.8](https://github.com/limboy/tudu/compare/v0.1.7...v0.1.8) - 2026-04-17
-    const body = lines.slice(2).join('\n').trim(); 
-
-    // Extract the comparison URL from the header if it exists
-    const compareMatch = headerLine.match(/\((https:\/\/github\.com\/[^/]+\/[^/]+\/compare\/[^)]+)\)/);
-    const compareUrl = compareMatch ? compareMatch[1] : null;
-
-    let finalNotes = body;
-    if (compareUrl) {
-      finalNotes += `\n\n**Full Changelog**: ${compareUrl}`;
-    }
-
-    const notesPath = path.resolve(__dirname, '..', 'RELEASENOTES.md');
-    fs.writeFileSync(notesPath, finalNotes);
-    console.log(`Wrote ${notesPath}`);
-  }
 }
 
 main();

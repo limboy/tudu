@@ -59,12 +59,11 @@
         "provider": "github",
         "owner": "limboy",
         "repo": "tudu",
-        "releaseType": "release"
+        "releaseType": "release",
+        "generateReleaseNotes": true
       }
-    ],
-    "releaseInfo": {
-      "releaseNotesFile": "RELEASENOTES.md"
-    }
+    ]
+
   },
   "devDependencies": {
     "@electron/rebuild": "^4.0.3",
