@@ -81,12 +81,12 @@ export function CardsTable({
       <Table>
         <TableHeader className="sticky top-0 bg-background/95 backdrop-blur-sm z-10">
           <TableRow>
-            <TableHead className="w-[40%]">Front</TableHead>
+            <TableHead className="w-[40%] pl-4">Front</TableHead>
             <TableHead>State</TableHead>
             <TableHead>Due</TableHead>
             <TableHead>Last reviewed</TableHead>
             <TableHead className="text-right">Difficulty</TableHead>
-            <TableHead className="text-right">Retrievability</TableHead>
+            <TableHead className="text-right pr-4">Retrievability</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -96,7 +96,7 @@ export function CardsTable({
               className={cn('cursor-pointer')}
               onClick={() => onRowClick(c)}
             >
-              <TableCell className="max-w-0">
+              <TableCell className="max-w-0 pl-4">
                 <div className="truncate">{previewText(c.frontMd) || '—'}</div>
               </TableCell>
               <TableCell>
@@ -111,7 +111,7 @@ export function CardsTable({
               <TableCell className="text-right tabular-nums">
                 {c.state === 0 ? '—' : c.difficulty.toFixed(2)}
               </TableCell>
-              <TableCell className="text-right tabular-nums">
+              <TableCell className="text-right tabular-nums pr-4">
                 {c.state === 0 ? '—' : `${Math.round(c.retrievability * 100)}%`}
               </TableCell>
             </TableRow>
