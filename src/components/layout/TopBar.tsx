@@ -1,23 +1,47 @@
-import { Plus, Play } from 'lucide-react'
+import { Plus, Play, PanelLeft, PanelRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export function TopBar({
   deckName,
   canStudy,
+  leftOpen,
+  rightOpen,
+  onToggleLeft,
+  onToggleRight,
   onAdd,
   onStudy,
 }: {
   deckName: string | null
   canStudy: boolean
+  leftOpen: boolean
+  rightOpen: boolean
+  onToggleLeft: () => void
+  onToggleRight: () => void
   onAdd: () => void
   onStudy: () => void
 }) {
   return (
-    <header className="h-12 shrink-0 border-b bg-background/80 backdrop-blur-sm flex items-center justify-between px-4">
-      <h1 className="text-sm font-medium tracking-tight truncate">
+    <header className="app-drag h-11 shrink-0 border-b bg-background/80 backdrop-blur-sm flex items-center gap-2 pr-3">
+      <div className="w-[76px] shrink-0" />
+
+      <div className="app-no-drag flex items-center gap-1 shrink-0">
+        <Button
+          size="icon"
+          variant="ghost"
+          className="size-7"
+          aria-label={leftOpen ? 'Hide deck sidebar' : 'Show deck sidebar'}
+          aria-pressed={leftOpen}
+          onClick={onToggleLeft}
+        >
+          <PanelLeft className="size-4" />
+        </Button>
+      </div>
+
+      <h1 className="flex-1 min-w-0 text-sm font-medium tracking-tight truncate text-center">
         {deckName ?? 'No deck selected'}
       </h1>
-      <div className="flex items-center gap-2">
+
+      <div className="app-no-drag flex items-center gap-2 shrink-0">
         <Button
           size="sm"
           variant="outline"
@@ -30,6 +54,16 @@ export function TopBar({
         <Button size="sm" onClick={onStudy} disabled={!canStudy}>
           <Play className="size-4" />
           Study
+        </Button>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="size-7"
+          aria-label={rightOpen ? 'Hide stats sidebar' : 'Show stats sidebar'}
+          aria-pressed={rightOpen}
+          onClick={onToggleRight}
+        >
+          <PanelRight className="size-4" />
         </Button>
       </div>
     </header>

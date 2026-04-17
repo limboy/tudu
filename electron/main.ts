@@ -21,7 +21,11 @@ function createWindow() {
   win = new BrowserWindow({
     width: 1100,
     height: 720,
+    minWidth: 640,
+    minHeight: 480,
     icon: path.join(process.env.VITE_PUBLIC!, 'electron-vite.svg'),
+    titleBarStyle: 'hiddenInset',
+    trafficLightPosition: { x: 16, y: 14 },
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
     },

@@ -1,8 +1,16 @@
-import { useState } from 'react'
 import { Search, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import type { CardFilter, CardState } from '@/types'
 import { CardStateValues } from '@/types'
 
@@ -15,6 +23,13 @@ const STATE_OPTIONS: Array<{ value: CardState; label: string }> = [
 
 type FilterDraft = Omit<CardFilter, 'deckId'>
 
+const getStartOfDay = (daysAgo: number) => {
+  const d = new Date()
+  d.setDate(d.getDate() - daysAgo)
+  d.setHours(0, 0, 0, 0)
+  return d.getTime()
+}
+
 export function CardsFilters({
   filter,
   onChange,
@@ -22,44 +37,55 @@ export function CardsFilters({
   filter: FilterDraft
   onChange: (next: FilterDraft) => void
 }) {
-  const [showMore, setShowMore] = useState(false)
-
-  const toggleState = (s: CardState) => {
-    const current = new Set(filter.states ?? [])
-    if (current.has(s)) current.delete(s)
-    else current.add(s)
-    onChange({ ...filter, states: current.size ? Array.from(current) : undefined })
-  }
-
-  const setDateRange = (
-    fromKey: 'createdFrom' | 'reviewedFrom',
-    toKey: 'createdTo' | 'reviewedTo',
-    from: string,
-    to: string,
-  ) => {
+  const onFilterChange = (value: string) => {
     const next = { ...filter }
-    next[fromKey] = from ? new Date(from).getTime() : undefined
-    next[toKey] = to ? new Date(to + 'T23:59:59.999').getTime() : undefined
+    next.states = undefined
+    next.createdFrom = undefined
+    next.createdTo = undefined
+    next.reviewedFrom = undefined
+    next.reviewedTo = undefined
+
+    if (value === 'all') {
+      // done
+    } else if (value.startsWith('state-')) {
+      const s = parseInt(value.replace('state-', ''), 10) as CardState
+      next.states = [s]
+    } else if (value.startsWith('created-')) {
+      const type = value.replace('created-', '')
+      if (type === 'today') next.createdFrom = getStartOfDay(0)
+      else if (type === 'week') next.createdFrom = getStartOfDay(7)
+      else if (type === 'month') next.createdFrom = getStartOfDay(30)
+    } else if (value.startsWith('reviewed-')) {
+      const type = value.replace('reviewed-', '')
+      if (type === 'today') next.reviewedFrom = getStartOfDay(0)
+      else if (type === 'week') next.reviewedFrom = getStartOfDay(7)
+      else if (type === 'month') next.reviewedFrom = getStartOfDay(30)
+    }
     onChange(next)
   }
 
-  const clear = () => onChange({})
+  const currentSelectValue = (() => {
+    if (filter.states?.length === 1) return `state-${filter.states[0]}`
+    if (filter.createdFrom === getStartOfDay(0)) return 'created-today'
+    if (filter.createdFrom === getStartOfDay(7)) return 'created-week'
+    if (filter.createdFrom === getStartOfDay(30)) return 'created-month'
+    if (filter.reviewedFrom === getStartOfDay(0)) return 'reviewed-today'
+    if (filter.reviewedFrom === getStartOfDay(7)) return 'reviewed-week'
+    if (filter.reviewedFrom === getStartOfDay(30)) return 'reviewed-month'
+    return 'all'
+  })()
 
   const hasAny =
     (filter.states && filter.states.length > 0) ||
     filter.createdFrom != null ||
-    filter.createdTo != null ||
     filter.reviewedFrom != null ||
-    filter.reviewedTo != null ||
-    filter.difficultyMin != null ||
-    filter.difficultyMax != null ||
-    filter.retrievabilityMin != null ||
-    filter.retrievabilityMax != null ||
     (filter.search && filter.search.trim())
+
+  const clear = () => onChange({})
 
   return (
     <div className="border-b bg-background/80 backdrop-blur-sm px-4 py-2 space-y-2">
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-2">
         <div className="relative flex-1 min-w-[200px] max-w-[320px]">
           <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
           <Input
@@ -69,168 +95,51 @@ export function CardsFilters({
             className="h-8 pl-7 text-sm"
           />
         </div>
-        <div className="flex items-center gap-1">
-          {STATE_OPTIONS.map((opt) => {
-            const active = filter.states?.includes(opt.value) ?? false
-            return (
-              <button
-                key={opt.value}
-                onClick={() => toggleState(opt.value)}
-                className={cn(
-                  'text-xs px-2 py-1 rounded-full border',
-                  active
-                    ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-background hover:bg-accent text-muted-foreground',
-                )}
-              >
-                {opt.label}
-              </button>
-            )
-          })}
-        </div>
-        <Button
-          size="sm"
-          variant="ghost"
-          className="h-8 px-2 text-xs"
-          onClick={() => setShowMore((v) => !v)}
-        >
-          {showMore ? 'Less' : 'More'}
-        </Button>
+        
+        <Select value={currentSelectValue} onValueChange={onFilterChange}>
+          <SelectTrigger size="sm" className="w-[160px]">
+            <SelectValue placeholder="All Cards" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Cards</SelectItem>
+            <SelectSeparator />
+            <SelectGroup>
+              <SelectLabel>State</SelectLabel>
+              {STATE_OPTIONS.map((opt) => (
+                <SelectItem key={opt.value} value={`state-${opt.value}`}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+            <SelectSeparator />
+            <SelectGroup>
+              <SelectLabel>Created</SelectLabel>
+              <SelectItem value="created-today">Today</SelectItem>
+              <SelectItem value="created-week">Past 7 Days</SelectItem>
+              <SelectItem value="created-month">Past 30 Days</SelectItem>
+            </SelectGroup>
+            <SelectSeparator />
+            <SelectGroup>
+              <SelectLabel>Reviewed</SelectLabel>
+              <SelectItem value="reviewed-today">Today</SelectItem>
+              <SelectItem value="reviewed-week">Past 7 Days</SelectItem>
+              <SelectItem value="reviewed-month">Past 30 Days</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+
         {hasAny && (
           <Button
             size="sm"
             variant="ghost"
-            className="h-8 px-2 text-xs text-muted-foreground"
+            className="h-8 px-2 text-xs text-muted-foreground ml-auto"
             onClick={clear}
           >
             <X className="size-3" /> Clear
           </Button>
         )}
       </div>
-      {showMore && (
-        <div className="flex items-end gap-4 flex-wrap text-xs">
-          <DateRange
-            label="Created"
-            from={filter.createdFrom}
-            to={filter.createdTo}
-            onChange={(f, t) => setDateRange('createdFrom', 'createdTo', f, t)}
-          />
-          <DateRange
-            label="Reviewed"
-            from={filter.reviewedFrom}
-            to={filter.reviewedTo}
-            onChange={(f, t) => setDateRange('reviewedFrom', 'reviewedTo', f, t)}
-          />
-          <RangeInput
-            label="Difficulty"
-            min={0}
-            max={10}
-            step={0.5}
-            valueMin={filter.difficultyMin}
-            valueMax={filter.difficultyMax}
-            onChange={(a, b) =>
-              onChange({ ...filter, difficultyMin: a, difficultyMax: b })
-            }
-          />
-          <RangeInput
-            label="Retrievability"
-            min={0}
-            max={1}
-            step={0.05}
-            valueMin={filter.retrievabilityMin}
-            valueMax={filter.retrievabilityMax}
-            onChange={(a, b) =>
-              onChange({ ...filter, retrievabilityMin: a, retrievabilityMax: b })
-            }
-          />
-        </div>
-      )}
     </div>
   )
 }
 
-function DateRange({
-  label,
-  from,
-  to,
-  onChange,
-}: {
-  label: string
-  from?: number
-  to?: number
-  onChange: (from: string, to: string) => void
-}) {
-  const toDateStr = (ms?: number) =>
-    ms != null ? new Date(ms).toISOString().slice(0, 10) : ''
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-muted-foreground">{label}</span>
-      <div className="flex items-center gap-1">
-        <Input
-          type="date"
-          className="h-7 text-xs w-[130px]"
-          value={toDateStr(from)}
-          onChange={(e) => onChange(e.target.value, toDateStr(to))}
-        />
-        <span className="text-muted-foreground">–</span>
-        <Input
-          type="date"
-          className="h-7 text-xs w-[130px]"
-          value={toDateStr(to)}
-          onChange={(e) => onChange(toDateStr(from), e.target.value)}
-        />
-      </div>
-    </div>
-  )
-}
-
-function RangeInput({
-  label,
-  min,
-  max,
-  step,
-  valueMin,
-  valueMax,
-  onChange,
-}: {
-  label: string
-  min: number
-  max: number
-  step: number
-  valueMin?: number
-  valueMax?: number
-  onChange: (min: number | undefined, max: number | undefined) => void
-}) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-muted-foreground">{label}</span>
-      <div className="flex items-center gap-1">
-        <Input
-          type="number"
-          min={min}
-          max={max}
-          step={step}
-          className="h-7 text-xs w-[70px]"
-          value={valueMin ?? ''}
-          placeholder={String(min)}
-          onChange={(e) =>
-            onChange(e.target.value === '' ? undefined : Number(e.target.value), valueMax)
-          }
-        />
-        <span className="text-muted-foreground">–</span>
-        <Input
-          type="number"
-          min={min}
-          max={max}
-          step={step}
-          className="h-7 text-xs w-[70px]"
-          value={valueMax ?? ''}
-          placeholder={String(max)}
-          onChange={(e) =>
-            onChange(valueMin, e.target.value === '' ? undefined : Number(e.target.value))
-          }
-        />
-      </div>
-    </div>
-  )
-}

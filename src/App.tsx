@@ -42,6 +42,11 @@ export default function App() {
   const [editorOpen, setEditorOpen] = useState(false)
   const [studying, setStudying] = useState(false)
 
+  const [leftOpen, setLeftOpen] = useState(true)
+  const [rightOpen, setRightOpen] = useState(true)
+  const [leftWidth, setLeftWidth] = useState(220)
+  const [rightWidth, setRightWidth] = useState(320)
+
   const openAdd = () => {
     if (selectedDeckId == null) return
     setEditor({ kind: 'add', deckId: selectedDeckId })
@@ -63,25 +68,35 @@ export default function App() {
 
   return (
     <>
-      <ThreePane
-        left={
-          <DeckSidebar
-            decks={decks}
-            selectedDeckId={selectedDeckId}
-            dueCounts={dueCounts}
-            onSelect={setSelectedDeckId}
-            onChanged={refreshAll}
-          />
-        }
-        center={
-          <>
-            <TopBar
-              deckName={selectedDeck?.name ?? null}
-              canStudy={canStudy}
-              onAdd={openAdd}
-              onStudy={() => setStudying(true)}
+      <div className="h-screen w-screen flex flex-col overflow-hidden bg-background text-foreground">
+        <TopBar
+          deckName={selectedDeck?.name ?? null}
+          canStudy={canStudy}
+          leftOpen={leftOpen}
+          rightOpen={rightOpen}
+          onToggleLeft={() => setLeftOpen((v) => !v)}
+          onToggleRight={() => setRightOpen((v) => !v)}
+          onAdd={openAdd}
+          onStudy={() => setStudying(true)}
+        />
+        <ThreePane
+          leftOpen={leftOpen}
+          rightOpen={rightOpen}
+          leftWidth={leftWidth}
+          rightWidth={rightWidth}
+          onLeftWidthChange={setLeftWidth}
+          onRightWidthChange={setRightWidth}
+          left={
+            <DeckSidebar
+              decks={decks}
+              selectedDeckId={selectedDeckId}
+              dueCounts={dueCounts}
+              onSelect={setSelectedDeckId}
+              onChanged={refreshAll}
             />
-            {selectedDeck ? (
+          }
+          center={
+            selectedDeck ? (
               <>
                 <CardsFilters filter={filterDraft} onChange={setFilterDraft} />
                 <CardsTable
@@ -94,17 +109,17 @@ export default function App() {
               <div className="flex-1 flex items-center justify-center text-sm text-muted-foreground">
                 Select or create a deck to get started
               </div>
-            )}
-          </>
-        }
-        right={
-          <DeckStatsPanel
-            deck={selectedDeck}
-            stats={stats}
-            onDeckChanged={refreshAll}
-          />
-        }
-      />
+            )
+          }
+          right={
+            <DeckStatsPanel
+              deck={selectedDeck}
+              stats={stats}
+              onDeckChanged={refreshAll}
+            />
+          }
+        />
+      </div>
 
       <CardEditor
         open={editorOpen}
