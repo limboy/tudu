@@ -3,6 +3,21 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.5](https://github.com/limboy/tudu/compare/v0.1.4...v0.1.5) - 2026-04-17
+
+### Refactoring
+
+- remove redundant node_modules ignore patterns from package.json ([7af78d4](https://github.com/limboy/tudu/commit/7af78d4392a5c1a81914925638faaeef6e81618e))
+
+### Documentation
+
+- update CHANGELOG for v0.1.4 ([2183995](https://github.com/limboy/tudu/commit/2183995a128302dec4c4e664569a965d6b74adbc))
+- update CHANGELOG for v0.1.3 ([8749b4c](https://github.com/limboy/tudu/commit/8749b4c2405854da951fe9f4dfcab60a33df0394))
+
+### Chores
+
+- remove unnecessary exclusion patterns for node_modules in package.json ([4e15a93](https://github.com/limboy/tudu/commit/4e15a93361a21dc0bddc26dbf08ceac300161af4))
+
 ## [v0.1.4](https://github.com/limboy/tudu/compare/v0.1.3...v0.1.4) - 2026-04-17
 
 ### Chores
