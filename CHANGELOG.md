@@ -3,6 +3,20 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.13](https://github.com/limboy/tudu/compare/v0.1.12...v0.1.13) - 2026-04-18
+
+### Bug Fixes
+
+- remove unnecessary spaces in tooltip arrow transform calculation ([ef21cb5](https://github.com/limboy/tudu/commit/ef21cb57fb0e12a27670222d488a02fbd177f501))
+
+### Refactoring
+
+- move releaseNotesFile configuration and simplify UpdateIndicator button styles while cleaning up release workflow steps ([514189d](https://github.com/limboy/tudu/commit/514189d0f38711bcd70509c90e3f669c08762a66))
+
+### Documentation
+
+- update CHANGELOG for v0.1.12 ([62a4a42](https://github.com/limboy/tudu/commit/62a4a428119b80a67e4ecc23bcb328bac78c99ef))
+
 ## [v0.1.12](https://github.com/limboy/tudu/compare/v0.1.11...v0.1.12) - 2026-04-17
 
 ### Features
