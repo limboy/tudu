@@ -81,12 +81,12 @@ export function CardsTable({
       <Table>
         <TableHeader className="sticky top-0 bg-background/95 backdrop-blur-sm z-10">
           <TableRow>
-            <TableHead className="w-[40%] pl-4">Front</TableHead>
-            <TableHead>State</TableHead>
-            <TableHead>Due</TableHead>
-            <TableHead>Last reviewed</TableHead>
-            <TableHead className="text-right">Difficulty</TableHead>
-            <TableHead className="text-right pr-4">Retrievability</TableHead>
+            <TableHead className="pl-4">Front</TableHead>
+            <TableHead className="w-[100px]">State</TableHead>
+            <TableHead className="w-[120px] ">Due</TableHead>
+            <TableHead className="w-[120px] ">Reviewed</TableHead>
+            <TableHead className="w-[120px] ">Difficulty</TableHead>
+            <TableHead className="w-[120px] pr-4">Retrievability</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -99,19 +99,19 @@ export function CardsTable({
               <TableCell className="max-w-0 pl-4">
                 <div className="truncate">{previewText(c.frontMd) || '—'}</div>
               </TableCell>
-              <TableCell>
+              <TableCell className="w-[100px]">
                 <Badge variant={STATE_VARIANT[c.state]}>{STATE_LABEL[c.state]}</Badge>
               </TableCell>
-              <TableCell className="text-muted-foreground">
+              <TableCell className="w-[120px] text-muted-foreground">
                 {relativeFromNow(c.due)}
               </TableCell>
-              <TableCell className="text-muted-foreground">
+              <TableCell className="w-[120px] text-muted-foreground">
                 {c.lastReview ? relativeFromNow(c.lastReview) : '—'}
               </TableCell>
-              <TableCell className="text-right tabular-nums">
+              <TableCell className="w-[120px] tabular-nums">
                 {c.state === 0 ? '—' : c.difficulty.toFixed(2)}
               </TableCell>
-              <TableCell className="text-right tabular-nums pr-4">
+              <TableCell className="w-[120px] tabular-nums pr-4">
                 {c.state === 0 ? '—' : `${Math.round(c.retrievability * 100)}%`}
               </TableCell>
             </TableRow>
