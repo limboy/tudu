@@ -38,7 +38,10 @@
           "arch": "arm64"
         }
       ],
-      "notarize": true
+      "notarize": true,
+      "releaseInfo": {
+        "releaseNotesFile": "RELEASENOTES.md"
+      }
     },
     "files": [
       "dist/index.html",
