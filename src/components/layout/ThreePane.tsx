@@ -109,7 +109,7 @@ function Resizer({ onResize }: { onResize: (dx: number) => void }) {
       role="separator"
       aria-orientation="vertical"
       onMouseDown={onDown}
-      className="w-1 shrink-0 cursor-col-resize bg-transparent hover:bg-border/80 active:bg-border transition-colors -mx-px z-10"
+      className="w-1 shrink-0 cursor-col-resize bg-transparent hover:bg-border/80 active:bg-border transition-colors -mr-1 z-10"
     />
   )
 }
