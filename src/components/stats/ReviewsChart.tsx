@@ -41,6 +41,7 @@ export function ReviewsChart({
               fill="var(--primary)"
               radius={[2, 2, 0, 0]}
               minPointSize={1}
+              isAnimationActive={false}
               background={{ fill: 'color-mix(in oklch, var(--foreground) 8%, transparent)', radius: [2, 2, 0, 0] }}
             />
           </BarChart>
