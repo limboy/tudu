@@ -16,7 +16,7 @@ export function TopBar({
 }) {
   return (
     <header className="app-drag h-11 shrink-0 border-b bg-background/80 backdrop-blur-sm flex items-center gap-2 pr-3">
-      <div className="w-[76px] shrink-0" />
+      <div className="w-19 shrink-0" />
 
       <div className="app-no-drag flex items-center gap-1 shrink-0">
         <Button

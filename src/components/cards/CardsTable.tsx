@@ -76,7 +76,12 @@ export function CardsTable({
   loading: boolean
   onRowClick: (card: Card) => void
 }) {
-  const [visibleColumns, setVisibleColumns] = useState(() => {
+  const [visibleColumns, setVisibleColumns] = useState<{
+    reviewed: boolean
+    difficulty: boolean
+    retrievability: boolean
+    created: boolean
+  }>(() => {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
       try {
@@ -123,21 +128,21 @@ export function CardsTable({
         <TableHeader className="sticky top-0 bg-background/95 backdrop-blur-sm z-10">
           <TableRow>
             <TableHead className="pl-4">Front</TableHead>
-            <TableHead className="w-[100px]">State</TableHead>
-            <TableHead className="w-[120px]">Due</TableHead>
+            <TableHead className="w-25">State</TableHead>
+            <TableHead className="w-30">Due</TableHead>
             {visibleColumns.created && (
-              <TableHead className="w-[120px]">Created</TableHead>
+              <TableHead className="w-30">Created</TableHead>
             )}
             {visibleColumns.reviewed && (
-              <TableHead className="w-[120px]">Reviewed</TableHead>
+              <TableHead className="w-30">Reviewed</TableHead>
             )}
             {visibleColumns.difficulty && (
-              <TableHead className="w-[120px]">Difficulty</TableHead>
+              <TableHead className="w-30">Difficulty</TableHead>
             )}
             {visibleColumns.retrievability && (
-              <TableHead className="w-[120px]">Retrievability</TableHead>
+              <TableHead className="w-30">Retrievability</TableHead>
             )}
-            <TableHead className="w-[40px] p-0">
+            <TableHead className="w-10 p-0">
               <div className="flex justify-center pr-4">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -234,12 +239,12 @@ export function CardsTable({
               <TableCell className="max-w-0 pl-4">
                 <div className="truncate">{previewText(c.frontMd) || '—'}</div>
               </TableCell>
-              <TableCell className="w-[100px]">
+              <TableCell className="w-25">
                 <Badge variant={STATE_VARIANT[c.state]}>{STATE_LABEL[c.state]}</Badge>
               </TableCell>
               <TableCell
                 className={cn(
-                  'w-[120px]',
+                  'w-30',
                   c.due < Date.now()
                     ? 'text-orange-600 dark:text-orange-400'
                     : 'text-muted-foreground',
@@ -248,26 +253,26 @@ export function CardsTable({
                 {relativeFromNow(c.due)}
               </TableCell>
               {visibleColumns.created && (
-                <TableCell className="w-[120px] text-muted-foreground">
+                <TableCell className="w-30 text-muted-foreground">
                   {relativeFromNow(c.createdAt)}
                 </TableCell>
               )}
               {visibleColumns.reviewed && (
-                <TableCell className="w-[120px] text-muted-foreground">
+                <TableCell className="w-30 text-muted-foreground">
                   {c.lastReview ? relativeFromNow(c.lastReview) : '—'}
                 </TableCell>
               )}
               {visibleColumns.difficulty && (
-                <TableCell className="w-[120px] tabular-nums">
+                <TableCell className="w-30 tabular-nums">
                   {c.state === 0 ? '—' : c.difficulty.toFixed(2)}
                 </TableCell>
               )}
               {visibleColumns.retrievability && (
-                <TableCell className="w-[120px] tabular-nums">
+                <TableCell className="w-30 tabular-nums">
                   {c.state === 0 ? '—' : `${Math.round(c.retrievability * 100)}%`}
                 </TableCell>
               )}
-              <TableCell className="w-[40px] p-0" />
+              <TableCell className="w-10 p-0" />
             </TableRow>
           ))}
         </TableBody>

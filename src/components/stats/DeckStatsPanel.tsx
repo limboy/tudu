@@ -71,7 +71,7 @@ export function DeckStatsPanel({
 
   return (
     <Tabs defaultValue="statistics" className="h-full flex flex-col">
-      <div className="px-4 h-[49px] flex items-center shrink-0 border-b bg-background/80 backdrop-blur-sm">
+      <div className="px-4 h-12.25 flex items-center shrink-0 border-b bg-background/80 backdrop-blur-sm">
         <TabsList className="grid w-full grid-cols-2 h-8">
           <TabsTrigger value="statistics">Statistics</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
@@ -128,7 +128,7 @@ export function DeckStatsPanel({
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') (e.currentTarget as HTMLInputElement).blur()
                 }}
-                className="h-8 max-w-[200px]"
+                className="h-8 max-w-50"
               />
             </div>
           </section>

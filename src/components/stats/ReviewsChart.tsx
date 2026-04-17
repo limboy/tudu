@@ -7,7 +7,7 @@ export function ReviewsChart({
 }) {
   const hasAny = data.some((d) => d.count > 0)
   return (
-    <div className="h-[120px] w-full">
+    <div className="h-30 w-full">
       {hasAny ? (
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
@@ -42,7 +42,7 @@ export function ReviewsChart({
               radius={[2, 2, 0, 0]}
               minPointSize={1}
               isAnimationActive={false}
-              background={{ fill: 'color-mix(in oklch, var(--foreground) 8%, transparent)', radius: [2, 2, 0, 0] }}
+              background={{ fill: 'color-mix(in oklch, var(--foreground) 8%, transparent)', radius: 2 }}
             />
           </BarChart>
         </ResponsiveContainer>

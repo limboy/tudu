@@ -18,7 +18,8 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
 let win: BrowserWindow | null = null
 
 function createWindow() {
-  const iconPath = path.join(process.env.APP_ROOT, 'assets/icon.png')
+  const appRoot = process.env.APP_ROOT || path.join(__dirname, '..')
+  const iconPath = path.join(appRoot, 'assets/icon.png')
   const icon = nativeImage.createFromPath(iconPath)
 
   win = new BrowserWindow({
@@ -34,7 +35,7 @@ function createWindow() {
     },
   })
 
-  if (process.platform === 'darwin') {
+  if (process.platform === 'darwin' && app.dock) {
     app.dock.setIcon(icon)
   }
 
