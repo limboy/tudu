@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { Download } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
@@ -17,10 +19,16 @@ export function DeckStatsPanel({
   onDeckChanged: () => void
 }) {
   const [retention, setRetention] = useState('')
+  const [busy, setBusy] = useState<'export' | 'import' | null>(null)
+  const [message, setMessage] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null)
 
   useEffect(() => {
     if (deck) setRetention(deck.desiredRetention.toFixed(2))
   }, [deck?.id, deck?.desiredRetention])
+
+  useEffect(() => {
+    setMessage(null)
+  }, [deck?.id])
 
   if (!deck) {
     return (
@@ -44,6 +52,22 @@ export function DeckStatsPanel({
       setRetention(deck.desiredRetention.toFixed(2))
     }
   }
+
+  const handleExport = async () => {
+    setBusy('export')
+    setMessage(null)
+    const result = await api.decks.export(deck.id)
+    setBusy(null)
+    if (result.ok) {
+      setMessage({
+        kind: 'ok',
+        text: `Exported ${result.cardCount} card${result.cardCount === 1 ? '' : 's'}.`,
+      })
+    } else if (!result.canceled) {
+      setMessage({ kind: 'err', text: result.error })
+    }
+  }
+
 
   return (
     <Tabs defaultValue="statistics" className="h-full flex flex-col">
@@ -107,6 +131,38 @@ export function DeckStatsPanel({
                 className="h-8 max-w-[200px]"
               />
             </div>
+          </section>
+
+          <Separator />
+
+          <section className="space-y-2">
+            <div className="text-[13px] font-medium text-foreground">
+              Export Deck
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Save the current deck (cards and review history) to a JSON file.
+            </p>
+            <div className="flex flex-wrap gap-2 pt-1">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExport}
+                disabled={busy !== null || stats.counts.total === 0}
+              >
+                <Download className="size-3.5" />
+                {busy === 'export' ? 'Exporting…' : 'Export deck'}
+              </Button>
+            </div>
+            {message && (
+              <div
+                className={
+                  'text-xs ' +
+                  (message.kind === 'ok' ? 'text-muted-foreground' : 'text-destructive')
+                }
+              >
+                {message.text}
+              </div>
+            )}
           </section>
         </TabsContent>
       </div>

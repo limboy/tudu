@@ -1,4 +1,5 @@
-import { ipcMain } from 'electron'
+import { BrowserWindow, dialog, ipcMain } from 'electron'
+import { promises as fs } from 'node:fs'
 import { getDb } from './db/index.js'
 import {
   applyReview,
@@ -12,8 +13,30 @@ import type {
   CardState,
   Deck,
   DeckStats,
+  ExportResult,
+  ImportResult,
   Rating,
 } from '../src/types.js'
+
+const EXPORT_VERSION = 1
+
+type ExportedCard = {
+  frontMd: string
+  backMd: string
+}
+
+type ExportPayload = {
+  format: 'tudu-deck'
+  version: number
+  exportedAt: number
+  deck: { name: string }
+  cards: ExportedCard[]
+}
+
+function sanitizeFilename(name: string): string {
+  const cleaned = name.replace(/[\\/:*?"<>|]+/g, '_').replace(/\s+/g, ' ').trim()
+  return cleaned || 'deck'
+}
 
 const CARD_COLUMNS = `
   id,
@@ -91,6 +114,152 @@ export function registerIpc(): void {
   ipcMain.handle('decks:setRetention', (_e, id: number, retention: number) => {
     const clamped = Math.min(0.99, Math.max(0.7, retention))
     db.prepare(`UPDATE decks SET desired_retention = ? WHERE id = ?`).run(clamped, id)
+  })
+
+  ipcMain.handle('decks:export', async (e, deckId: number): Promise<ExportResult> => {
+    try {
+      const deck = getDeck(deckId)
+      const cardRows = db
+        .prepare(
+          `SELECT front_md AS frontMd, back_md AS backMd
+             FROM cards WHERE deck_id = ? ORDER BY created_at ASC`,
+        )
+        .all(deckId) as ExportedCard[]
+
+      const payload: ExportPayload = {
+        format: 'tudu-deck',
+        version: EXPORT_VERSION,
+        exportedAt: Date.now(),
+        deck: { name: deck.name },
+        cards: cardRows.map((c) => ({ frontMd: c.frontMd, backMd: c.backMd })),
+      }
+
+      const win = BrowserWindow.fromWebContents(e.sender) ?? undefined
+      const defaultName = `${sanitizeFilename(deck.name)}.tudu.json`
+      const result = win
+        ? await dialog.showSaveDialog(win, {
+            title: 'Export deck',
+            defaultPath: defaultName,
+            filters: [{ name: 'Tudu deck', extensions: ['json'] }],
+          })
+        : await dialog.showSaveDialog({
+            title: 'Export deck',
+            defaultPath: defaultName,
+            filters: [{ name: 'Tudu deck', extensions: ['json'] }],
+          })
+      if (result.canceled || !result.filePath) {
+        return { ok: false, canceled: true }
+      }
+      await fs.writeFile(result.filePath, JSON.stringify(payload, null, 2), 'utf8')
+      return { ok: true, path: result.filePath, cardCount: payload.cards.length }
+    } catch (err) {
+      return { ok: false, canceled: false, error: (err as Error).message }
+    }
+  })
+
+  ipcMain.handle('decks:import', async (e): Promise<ImportResult> => {
+    try {
+      const win = BrowserWindow.fromWebContents(e.sender) ?? undefined
+      const result = win
+        ? await dialog.showOpenDialog(win, {
+            title: 'Import deck',
+            properties: ['openFile'],
+            filters: [
+              { name: 'Tudu deck', extensions: ['json'] },
+              { name: 'All files', extensions: ['*'] },
+            ],
+          })
+        : await dialog.showOpenDialog({
+            title: 'Import deck',
+            properties: ['openFile'],
+            filters: [
+              { name: 'Tudu deck', extensions: ['json'] },
+              { name: 'All files', extensions: ['*'] },
+            ],
+          })
+      if (result.canceled || result.filePaths.length === 0) {
+        return { ok: false, canceled: true }
+      }
+      const raw = await fs.readFile(result.filePaths[0], 'utf8')
+      const parsed = JSON.parse(raw) as Partial<ExportPayload>
+      if (parsed?.format !== 'tudu-deck' || typeof parsed.version !== 'number') {
+        return {
+          ok: false,
+          canceled: false,
+          error: 'Not a Tudu deck file.',
+        }
+      }
+      if (parsed.version > EXPORT_VERSION) {
+        return {
+          ok: false,
+          canceled: false,
+          error: `Unsupported export version ${parsed.version}.`,
+        }
+      }
+      if (!parsed.deck || !Array.isArray(parsed.cards)) {
+        return { ok: false, canceled: false, error: 'Malformed deck file.' }
+      }
+
+      const now = Date.now()
+      const deckName = (parsed.deck.name ?? 'Imported deck').toString().trim() || 'Imported deck'
+
+      const existing = new Set(
+        (db.prepare(`SELECT name FROM decks`).all() as Array<{ name: string }>).map(
+          (r) => r.name,
+        ),
+      )
+      let finalName = deckName
+      if (existing.has(finalName)) {
+        let i = 2
+        while (existing.has(`${deckName} (${i})`)) i++
+        finalName = `${deckName} (${i})`
+      }
+
+      const insertDeck = db.prepare(
+        `INSERT INTO decks (name, desired_retention, created_at) VALUES (?, 0.9, ?)`,
+      )
+      const insertCard = db.prepare(
+        `INSERT INTO cards (
+           deck_id, front_md, back_md,
+           state, difficulty, stability, retrievability,
+           due, last_review, reps, lapses,
+           elapsed_days, scheduled_days, learning_steps,
+           created_at, updated_at
+         ) VALUES (
+           @deckId, @frontMd, @backMd,
+           @state, @difficulty, @stability, @retrievability,
+           @due, @last_review, @reps, @lapses,
+           @elapsed_days, @scheduled_days, @learning_steps,
+           @createdAt, @updatedAt
+         )`,
+      )
+
+      const tx = db.transaction(() => {
+        const info = insertDeck.run(finalName, now)
+        const newDeckId = info.lastInsertRowid as number
+        for (const c of parsed.cards!) {
+          const fsrsFields = newCardFsrsFields(now)
+          insertCard.run({
+            deckId: newDeckId,
+            frontMd: String(c.frontMd ?? ''),
+            backMd: String(c.backMd ?? ''),
+            ...fsrsFields,
+            createdAt: now,
+            updatedAt: now,
+          })
+        }
+        return newDeckId
+      })
+      const newDeckId = tx() as number
+      return {
+        ok: true,
+        deckId: newDeckId,
+        deckName: finalName,
+        cardCount: parsed.cards.length,
+      }
+    } catch (err) {
+      return { ok: false, canceled: false, error: (err as Error).message }
+    }
   })
 
   ipcMain.handle('decks:dueCounts', () => {

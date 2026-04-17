@@ -4,6 +4,8 @@ import type {
   CardFilter,
   Deck,
   DeckStats,
+  ExportResult,
+  ImportResult,
   Rating,
   TuduApi,
 } from '../src/types.js'
@@ -18,6 +20,8 @@ const api: TuduApi = {
       ipcRenderer.invoke('decks:setRetention', id, retention) as Promise<void>,
     dueCounts: () =>
       ipcRenderer.invoke('decks:dueCounts') as Promise<Record<number, number>>,
+    export: (id) => ipcRenderer.invoke('decks:export', id) as Promise<ExportResult>,
+    import: () => ipcRenderer.invoke('decks:import') as Promise<ImportResult>,
   },
   cards: {
     list: (filter: CardFilter) =>

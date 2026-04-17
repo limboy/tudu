@@ -65,6 +65,16 @@ export type DeckStats = {
   reviewsLast30: Array<{ date: string; count: number }>
 }
 
+export type ExportResult =
+  | { ok: true; path: string; cardCount: number }
+  | { ok: false; canceled: true }
+  | { ok: false; canceled: false; error: string }
+
+export type ImportResult =
+  | { ok: true; deckId: number; deckName: string; cardCount: number }
+  | { ok: false; canceled: true }
+  | { ok: false; canceled: false; error: string }
+
 export type TuduApi = {
   decks: {
     list: () => Promise<Deck[]>
@@ -73,6 +83,8 @@ export type TuduApi = {
     delete: (id: number) => Promise<void>
     setRetention: (id: number, retention: number) => Promise<void>
     dueCounts: () => Promise<Record<number, number>>
+    export: (id: number) => Promise<ExportResult>
+    import: () => Promise<ImportResult>
   }
   cards: {
     list: (filter: CardFilter) => Promise<Card[]>
