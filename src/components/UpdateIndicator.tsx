@@ -37,7 +37,7 @@ export function UpdateIndicator() {
           <Button
             size="sm"
             variant="outline"
-            className="hover:bg-amber-100 hover:text-amber-600 h-7 px-3 text-xs shrink-0 rounded-full border-amber-600 transition-all"
+            className="hover:bg-background hover:text-amber-600 h-7 px-3 text-xs shrink-0 rounded-full border-amber-600 transition-all"
             disabled={applying}
             onClick={handleApply}
           >
@@ -45,7 +45,7 @@ export function UpdateIndicator() {
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Click to restart and update.</p>
+          <p>restart and update.</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
