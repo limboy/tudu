@@ -1,6 +1,8 @@
 {
   "name": "tudu",
   "version": "0.1.1",
+  "description": "A flashcard app with spaced repetition",
+  "author": "limboy",
   "private": true,
   "type": "module",
   "main": "dist/main.js",
@@ -93,10 +95,12 @@
         "provider": "github",
         "owner": "limboy",
         "repo": "tudu",
-        "releaseType": "release",
-        "releaseNotesFile": "RELEASENOTES.md"
+        "releaseType": "release"
       }
-    ]
+    ],
+    "releaseInfo": {
+      "releaseNotesFile": "RELEASENOTES.md"
+    }
   },
   "devDependencies": {
     "@electron/rebuild": "^4.0.3",
