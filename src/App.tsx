@@ -71,13 +71,10 @@ export default function App() {
       <div className="h-screen w-screen flex flex-col overflow-hidden bg-background text-foreground">
         <TopBar
           deckName={selectedDeck?.name ?? null}
-          canStudy={canStudy}
           leftOpen={leftOpen}
           rightOpen={rightOpen}
           onToggleLeft={() => setLeftOpen((v) => !v)}
           onToggleRight={() => setRightOpen((v) => !v)}
-          onAdd={openAdd}
-          onStudy={() => setStudying(true)}
         />
         <ThreePane
           leftOpen={leftOpen}
@@ -98,7 +95,13 @@ export default function App() {
           center={
             selectedDeck ? (
               <>
-                <CardsFilters filter={filterDraft} onChange={setFilterDraft} />
+                <CardsFilters
+                  filter={filterDraft}
+                  canStudy={canStudy}
+                  onChange={setFilterDraft}
+                  onAdd={openAdd}
+                  onStudy={() => setStudying(true)}
+                />
                 <CardsTable
                   cards={cards}
                   loading={cardsLoading}

@@ -1,24 +1,18 @@
-import { Plus, Play, PanelLeft, PanelRight } from 'lucide-react'
+import { PanelLeft, PanelRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export function TopBar({
   deckName,
-  canStudy,
   leftOpen,
   rightOpen,
   onToggleLeft,
   onToggleRight,
-  onAdd,
-  onStudy,
 }: {
   deckName: string | null
-  canStudy: boolean
   leftOpen: boolean
   rightOpen: boolean
   onToggleLeft: () => void
   onToggleRight: () => void
-  onAdd: () => void
-  onStudy: () => void
 }) {
   return (
     <header className="app-drag h-11 shrink-0 border-b bg-background/80 backdrop-blur-sm flex items-center gap-2 pr-3">
@@ -43,19 +37,6 @@ export function TopBar({
 
       <div className="app-no-drag flex items-center gap-2 shrink-0">
         <Button
-          size="sm"
-          variant="outline"
-          onClick={onAdd}
-          disabled={deckName === null}
-        >
-          <Plus className="size-4" />
-          Add
-        </Button>
-        <Button size="sm" onClick={onStudy} disabled={!canStudy}>
-          <Play className="size-4" />
-          Study
-        </Button>
-        <Button
           size="icon"
           variant="ghost"
           className="size-7"
@@ -69,3 +50,4 @@ export function TopBar({
     </header>
   )
 }
+

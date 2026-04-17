@@ -1,4 +1,4 @@
-import { Search, X } from 'lucide-react'
+import { Search, X, Plus, Play } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {
@@ -32,10 +32,16 @@ const getStartOfDay = (daysAgo: number) => {
 
 export function CardsFilters({
   filter,
+  canStudy,
   onChange,
+  onAdd,
+  onStudy,
 }: {
   filter: FilterDraft
+  canStudy: boolean
   onChange: (next: FilterDraft) => void
+  onAdd: () => void
+  onStudy: () => void
 }) {
   const onFilterChange = (value: string) => {
     const next = { ...filter }
@@ -97,7 +103,7 @@ export function CardsFilters({
         </div>
         
         <Select value={currentSelectValue} onValueChange={onFilterChange}>
-          <SelectTrigger size="sm" className="w-[160px]">
+          <SelectTrigger size="sm" className="w-[140px]">
             <SelectValue placeholder="All Cards" />
           </SelectTrigger>
           <SelectContent>
@@ -132,14 +138,26 @@ export function CardsFilters({
           <Button
             size="sm"
             variant="ghost"
-            className="h-8 px-2 text-xs text-muted-foreground ml-auto"
+            className="h-8 px-2 text-xs text-muted-foreground"
             onClick={clear}
           >
             <X className="size-3" /> Clear
           </Button>
         )}
+
+        <div className="ml-auto flex items-center gap-2">
+          <Button size="sm" variant="outline" className="h-8" onClick={onAdd}>
+            <Plus className="size-3.5" />
+            Add
+          </Button>
+          <Button size="sm" className="h-8" onClick={onStudy} disabled={!canStudy}>
+            <Play className="size-3.5" />
+            Study
+          </Button>
+        </div>
       </div>
     </div>
   )
 }
+
 
