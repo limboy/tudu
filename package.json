@@ -12,7 +12,8 @@
     "start": "vite",
     "electron": "electron .",
     "lint": "tsc -b --noEmit",
-    "postinstall": "electron-rebuild -f -w better-sqlite3"
+    "postinstall": "electron-rebuild -f -w better-sqlite3",
+    "changelog": "node scripts/generate-changelog.cjs"
   },
   "build": {
     "appId": "me.limboy.tudu",
@@ -92,7 +93,8 @@
         "provider": "github",
         "owner": "limboy",
         "repo": "tudu",
-        "releaseType": "release"
+        "releaseType": "release",
+        "releaseNotesFile": "RELEASENOTES.md"
       }
     ]
   },
