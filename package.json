@@ -10,10 +10,13 @@
     "preview": "vite preview",
     "start": "vite",
     "electron": "electron .",
-    "lint": "tsc -b --noEmit"
+    "lint": "tsc -b --noEmit",
+    "postinstall": "electron-rebuild -f -w better-sqlite3"
   },
   "devDependencies": {
+    "@electron/rebuild": "^4.0.3",
     "@tailwindcss/vite": "^4.2.2",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
@@ -26,12 +29,17 @@
     "vite-plugin-electron": "^0.29.1"
   },
   "dependencies": {
+    "better-sqlite3": "^12.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.8.0",
     "radix-ui": "^1.4.3",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "tailwind-merge": "^3.5.0"
+    "react-markdown": "^10.1.0",
+    "recharts": "^3.8.1",
+    "remark-gfm": "^4.0.1",
+    "tailwind-merge": "^3.5.0",
+    "ts-fsrs": "^5.3.2"
   }
 }

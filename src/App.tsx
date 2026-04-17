@@ -1,56 +1,129 @@
-import { useState } from 'react'
-import { CheckCircle2, Circle, Plus, Sparkles } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { useEffect, useMemo, useState } from 'react'
+import { ThreePane } from '@/components/layout/ThreePane'
+import { TopBar } from '@/components/layout/TopBar'
+import { DeckSidebar } from '@/components/decks/DeckSidebar'
+import { CardsFilters } from '@/components/cards/CardsFilters'
+import { CardsTable } from '@/components/cards/CardsTable'
+import { CardEditor } from '@/components/cards/CardEditor'
+import { DeckStatsPanel } from '@/components/stats/DeckStatsPanel'
+import { StudyView } from '@/components/study/StudyView'
+import { useDecks } from '@/hooks/useDecks'
+import { useCards } from '@/hooks/useCards'
+import { useDeckStats } from '@/hooks/useDeckStats'
+import type { Card, CardFilter } from '@/types'
 
-type Task = { id: number; text: string; done: boolean }
+type EditorMode = { kind: 'add'; deckId: number } | { kind: 'edit'; card: Card }
 
 export default function App() {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, text: 'Welcome to tudu', done: true },
-    { id: 2, text: 'Build something great', done: false },
-  ])
+  const { decks, dueCounts, refresh: refreshDecks } = useDecks()
+  const [selectedDeckId, setSelectedDeckId] = useState<number | null>(null)
 
-  const toggle = (id: number) =>
-    setTasks((t) => t.map((x) => (x.id === id ? { ...x, done: !x.done } : x)))
+  useEffect(() => {
+    if (selectedDeckId != null && !decks.find((d) => d.id === selectedDeckId)) {
+      setSelectedDeckId(null)
+    }
+    if (selectedDeckId == null && decks.length > 0) {
+      setSelectedDeckId(decks[0].id)
+    }
+  }, [decks, selectedDeckId])
 
-  const add = () =>
-    setTasks((t) => [
-      ...t,
-      { id: Date.now(), text: `New task ${t.length + 1}`, done: false },
-    ])
+  const selectedDeck = decks.find((d) => d.id === selectedDeckId) ?? null
+
+  const [filterDraft, setFilterDraft] = useState<Omit<CardFilter, 'deckId'>>({})
+  const filter = useMemo<CardFilter | null>(
+    () => (selectedDeckId == null ? null : { deckId: selectedDeckId, ...filterDraft }),
+    [selectedDeckId, filterDraft],
+  )
+
+  const { cards, loading: cardsLoading, refresh: refreshCards } = useCards(filter)
+  const { stats, refresh: refreshStats } = useDeckStats(selectedDeckId)
+
+  const [editor, setEditor] = useState<EditorMode | null>(null)
+  const [editorOpen, setEditorOpen] = useState(false)
+  const [studying, setStudying] = useState(false)
+
+  const openAdd = () => {
+    if (selectedDeckId == null) return
+    setEditor({ kind: 'add', deckId: selectedDeckId })
+    setEditorOpen(true)
+  }
+  const openEdit = (c: Card) => {
+    setEditor({ kind: 'edit', card: c })
+    setEditorOpen(true)
+  }
+
+  const refreshAll = () => {
+    refreshDecks()
+    refreshCards()
+    refreshStats()
+  }
+
+  const canStudy =
+    !!stats && stats.counts.total > 0 && (stats.dueToday > 0 || stats.counts.new > 0)
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-8">
-      <div className="w-full max-w-md space-y-6">
-        <div className="flex items-center gap-2">
-          <Sparkles className="size-6" />
-          <h1 className="text-2xl font-semibold tracking-tight">tudu</h1>
-        </div>
+    <>
+      <ThreePane
+        left={
+          <DeckSidebar
+            decks={decks}
+            selectedDeckId={selectedDeckId}
+            dueCounts={dueCounts}
+            onSelect={setSelectedDeckId}
+            onChanged={refreshAll}
+          />
+        }
+        center={
+          <>
+            <TopBar
+              deckName={selectedDeck?.name ?? null}
+              canStudy={canStudy}
+              onAdd={openAdd}
+              onStudy={() => setStudying(true)}
+            />
+            {selectedDeck ? (
+              <>
+                <CardsFilters filter={filterDraft} onChange={setFilterDraft} />
+                <CardsTable
+                  cards={cards}
+                  loading={cardsLoading}
+                  onRowClick={openEdit}
+                />
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center text-sm text-muted-foreground">
+                Select or create a deck to get started
+              </div>
+            )}
+          </>
+        }
+        right={
+          <DeckStatsPanel
+            deck={selectedDeck}
+            stats={stats}
+            onDeckChanged={refreshAll}
+          />
+        }
+      />
 
-        <ul className="space-y-2">
-          {tasks.map((task) => (
-            <li
-              key={task.id}
-              className="flex items-center gap-3 rounded-md border p-3 hover:bg-accent cursor-pointer"
-              onClick={() => toggle(task.id)}
-            >
-              {task.done ? (
-                <CheckCircle2 className="size-5 text-primary" />
-              ) : (
-                <Circle className="size-5 text-muted-foreground" />
-              )}
-              <span className={task.done ? 'line-through text-muted-foreground' : ''}>
-                {task.text}
-              </span>
-            </li>
-          ))}
-        </ul>
+      <CardEditor
+        open={editorOpen}
+        mode={editor}
+        onOpenChange={setEditorOpen}
+        onSaved={refreshAll}
+      />
 
-        <Button onClick={add} className="w-full">
-          <Plus className="size-4" />
-          Add task
-        </Button>
-      </div>
-    </div>
+      {studying && selectedDeck && (
+        <StudyView
+          deckId={selectedDeck.id}
+          deckName={selectedDeck.name}
+          onExit={() => {
+            setStudying(false)
+            refreshAll()
+          }}
+          onReviewed={refreshAll}
+        />
+      )}
+    </>
   )
 }
