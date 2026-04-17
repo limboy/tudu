@@ -75,7 +75,15 @@ export type ImportResult =
   | { ok: false; canceled: true }
   | { ok: false; canceled: false; error: string }
 
+export type UpdateInfo = {
+  version: string
+}
+
 export type TuduApi = {
+  update: {
+    onUpdateReady: (callback: (info: UpdateInfo) => void) => void
+    apply: () => Promise<void>
+  }
   decks: {
     list: () => Promise<Deck[]>
     create: (name: string) => Promise<Deck>

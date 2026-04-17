@@ -1,6 +1,7 @@
-import { app, BrowserWindow, nativeImage } from 'electron'
+import { app, BrowserWindow, ipcMain, nativeImage } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
+import { autoUpdater } from 'electron-updater'
 import { initDatabase } from './db/index.js'
 import { registerIpc } from './ipc.js'
 
@@ -57,8 +58,40 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow()
 })
 
+function broadcastToAllWindows(channel: string, ...args: unknown[]) {
+  for (const win of BrowserWindow.getAllWindows()) {
+    win.webContents.send(channel, ...args)
+  }
+}
+
+function initAutoUpdater() {
+  if (!app.isPackaged) return
+
+  autoUpdater.autoDownload = true
+  autoUpdater.autoInstallOnAppQuit = true
+
+  autoUpdater.on('update-downloaded', (info) => {
+    broadcastToAllWindows('update-ready', { version: info.version })
+  })
+
+  autoUpdater.on('error', (err) => {
+    console.error('[autoUpdater]', err)
+  })
+
+  autoUpdater.checkForUpdates().catch(() => {})
+  setInterval(() => {
+    autoUpdater.checkForUpdates().catch(() => {})
+  }, 6 * 60 * 60 * 1000)
+}
+
 app.whenReady().then(() => {
   initDatabase()
   registerIpc()
   createWindow()
+  initAutoUpdater()
+
+  ipcMain.handle('apply-update', () => {
+    if (!app.isPackaged) return
+    autoUpdater.quitAndInstall()
+  })
 })

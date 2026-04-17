@@ -8,9 +8,16 @@ import type {
   ImportResult,
   Rating,
   TuduApi,
+  UpdateInfo,
 } from '../src/types.js'
 
 const api: TuduApi = {
+  update: {
+    onUpdateReady: (callback: (info: UpdateInfo) => void) => {
+      ipcRenderer.on('update-ready', (_event, info) => callback(info))
+    },
+    apply: () => ipcRenderer.invoke('apply-update') as Promise<void>,
+  },
   decks: {
     list: () => ipcRenderer.invoke('decks:list') as Promise<Deck[]>,
     create: (name) => ipcRenderer.invoke('decks:create', name) as Promise<Deck>,
