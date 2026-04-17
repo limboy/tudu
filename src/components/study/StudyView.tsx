@@ -66,11 +66,13 @@ export function StudyView({
 
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col">
-      <header className="h-12 shrink-0 border-b flex items-center justify-between px-4">
-        <div className="text-sm text-muted-foreground">
+      <header className="app-drag h-12 shrink-0 border-b flex items-center gap-4 px-4">
+        <div className="w-15 shrink-0" />
+        <div className="min-w-0 text-sm text-muted-foreground truncate">
           Studying · <span className="text-foreground">{deckName}</span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex-1" />
+        <div className="app-no-drag flex items-center gap-3">
           {!done && total > 0 && (
             <span className="text-xs text-muted-foreground tabular-nums">
               {Math.min(index + 1, total)} / {total}
