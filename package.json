@@ -47,8 +47,6 @@
       "dist/preload.mjs",
       "assets/icon.png",
       "!**/node_modules/**/*.{c,cpp,h,cc,hpp,gyp,gypi,md,markdown,txt,map}",
-      "!**/node_modules/**/src/**",
-      "!**/node_modules/**/deps/**",
       "!**/node_modules/**/test/**",
       "!**/node_modules/**/docs/**",
       "!**/node_modules/**/.github/**",
