@@ -62,16 +62,31 @@ function formatCommit(p) {
 }
 
 function renderSection(header, dateStr, commits) {
-  const parsed = commits.map(parseCommit).filter(Boolean);
-  if (parsed.length === 0) return '';
+  const itemsByType = new Map();
+  const others = [];
+  const breaking = [];
 
-  const breaking = parsed.filter(p => p.breaking);
-  const byType = new Map();
-  for (const p of parsed) {
-    if (!KNOWN_TYPES.has(p.type)) continue;
-    if (!byType.has(p.type)) byType.set(p.type, []);
-    byType.get(p.type).push(p);
+  for (const c of commits) {
+    const p = parseCommit(c);
+    if (p) {
+      if (p.breaking) breaking.push(p);
+      if (!KNOWN_TYPES.has(p.type)) {
+        others.push(p);
+      } else {
+        if (!itemsByType.has(p.type)) itemsByType.set(p.type, []);
+        itemsByType.get(p.type).push(p);
+      }
+    } else {
+      // Doesn't match conventional format, but still a change
+      others.push({
+        desc: c.subject,
+        hash: c.hash,
+        breaking: false
+      });
+    }
   }
+
+  if (breaking.length === 0 && itemsByType.size === 0 && others.length === 0) return '';
 
   const lines = [`## ${header}${dateStr ? ` - ${dateStr}` : ''}`, ''];
 
@@ -82,11 +97,25 @@ function renderSection(header, dateStr, commits) {
   }
 
   for (const g of GROUPS) {
-    const items = byType.get(g.type);
+    const items = itemsByType.get(g.type);
     if (!items || items.length === 0) continue;
     lines.push(`### ${g.title}`, '');
     for (const p of items) lines.push(formatCommit(p));
     lines.push('');
+  }
+
+  if (others.length > 0) {
+    // Filter out "0.1.7" style version commits to keep it clean if desired, 
+    // but usually better to include than to miss something.
+    const filteredOthers = others.filter(o => !/^\d+\.\d+\.\d+$/.test(o.desc));
+    if (filteredOthers.length > 0) {
+      lines.push('### Other Changes', '');
+      for (const o of filteredOthers) {
+        const short = o.hash.slice(0, 7);
+        lines.push(`- ${o.desc} ([${short}](${REPO_URL}/commit/${o.hash}))`);
+      }
+      lines.push('');
+    }
   }
 
   return lines.join('\n');
@@ -144,9 +173,20 @@ function main() {
     // but rather just the content. Or maybe a simpler header.
     // Let's strip the first line (the header) for GitHub Release Body
     const lines = sections[releaseNotesIndex].split('\n');
-    const body = lines.slice(2).join('\n').trim(); // Skip header and empty line
+    const headerLine = lines[0]; // e.g. ## [v0.1.8](https://github.com/limboy/tudu/compare/v0.1.7...v0.1.8) - 2026-04-17
+    const body = lines.slice(2).join('\n').trim(); 
+
+    // Extract the comparison URL from the header if it exists
+    const compareMatch = headerLine.match(/\((https:\/\/github\.com\/[^/]+\/[^/]+\/compare\/[^)]+)\)/);
+    const compareUrl = compareMatch ? compareMatch[1] : null;
+
+    let finalNotes = body;
+    if (compareUrl) {
+      finalNotes += `\n\n**Full Changelog**: ${compareUrl}`;
+    }
+
     const notesPath = path.resolve(__dirname, '..', 'RELEASENOTES.md');
-    fs.writeFileSync(notesPath, body);
+    fs.writeFileSync(notesPath, finalNotes);
     console.log(`Wrote ${notesPath}`);
   }
 }
