@@ -96,6 +96,13 @@ export function CardsTable({
     localStorage.setItem(STORAGE_KEY, JSON.stringify(visibleColumns))
   }, [visibleColumns])
 
+  // Update relative times every minute
+  const [, setTick] = useState(0)
+  useEffect(() => {
+    const timer = setInterval(() => setTick((t) => t + 1), 60000)
+    return () => clearInterval(timer)
+  }, [])
+
   if (loading && cards.length === 0) {
     return (
       <div className="p-8 text-center text-sm text-muted-foreground">Loading…</div>
