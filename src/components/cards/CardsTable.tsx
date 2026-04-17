@@ -3,10 +3,12 @@ import { MoreHorizontal } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuCheckboxItem,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 import {
   Table,
   TableBody,
@@ -116,31 +118,61 @@ export function CardsTable({
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuCheckboxItem
-                      checked={visibleColumns.reviewed}
-                      onCheckedChange={(checked) =>
-                        setVisibleColumns((v) => ({ ...v, reviewed: !!checked }))
-                      }
+                  <DropdownMenuContent align="end" className="w-40">
+                    <DropdownMenuItem
+                      onSelect={(e) => e.preventDefault()}
+                      className="flex items-center justify-between cursor-default"
                     >
-                      Reviewed
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem
-                      checked={visibleColumns.difficulty}
-                      onCheckedChange={(checked) =>
-                        setVisibleColumns((v) => ({ ...v, difficulty: !!checked }))
-                      }
+                      <Label
+                        htmlFor="col-reviewed"
+                        className="flex-1 cursor-pointer font-normal"
+                      >
+                        Reviewed
+                      </Label>
+                      <Switch
+                        id="col-reviewed"
+                        checked={visibleColumns.reviewed}
+                        onCheckedChange={(checked) =>
+                          setVisibleColumns((v) => ({ ...v, reviewed: checked }))
+                        }
+                      />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={(e) => e.preventDefault()}
+                      className="flex items-center justify-between cursor-default"
                     >
-                      Difficulty
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem
-                      checked={visibleColumns.retrievability}
-                      onCheckedChange={(checked) =>
-                        setVisibleColumns((v) => ({ ...v, retrievability: !!checked }))
-                      }
+                      <Label
+                        htmlFor="col-difficulty"
+                        className="flex-1 cursor-pointer font-normal"
+                      >
+                        Difficulty
+                      </Label>
+                      <Switch
+                        id="col-difficulty"
+                        checked={visibleColumns.difficulty}
+                        onCheckedChange={(checked) =>
+                          setVisibleColumns((v) => ({ ...v, difficulty: checked }))
+                        }
+                      />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={(e) => e.preventDefault()}
+                      className="flex items-center justify-between cursor-default"
                     >
-                      Retrievability
-                    </DropdownMenuCheckboxItem>
+                      <Label
+                        htmlFor="col-retrievability"
+                        className="flex-1 cursor-pointer font-normal"
+                      >
+                        Retrievability
+                      </Label>
+                      <Switch
+                        id="col-retrievability"
+                        checked={visibleColumns.retrievability}
+                        onCheckedChange={(checked) =>
+                          setVisibleColumns((v) => ({ ...v, retrievability: checked }))
+                        }
+                      />
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
