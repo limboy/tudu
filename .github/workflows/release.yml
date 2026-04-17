@@ -33,13 +33,23 @@ jobs:
           if [ -n "$(git status --porcelain CHANGELOG.md)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            
+            # Save generated files to temporary location
             cp CHANGELOG.md /tmp/CHANGELOG.md
+            cp RELEASENOTES.md /tmp/RELEASENOTES.md
+            
             git fetch origin main
             git checkout -B main origin/main
             cp /tmp/CHANGELOG.md CHANGELOG.md
             git add CHANGELOG.md
             git commit -m "docs: update CHANGELOG for ${GITHUB_REF_NAME}" && git push origin main || true
+            
+            # Switch back to the tag
             git checkout ${GITHUB_REF_NAME}
+            
+            # Restore the files for the build step
+            cp /tmp/CHANGELOG.md CHANGELOG.md
+            cp /tmp/RELEASENOTES.md RELEASENOTES.md
           fi
 
       - name: Build renderer
