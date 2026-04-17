@@ -3,6 +3,20 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.15](https://github.com/limboy/tudu/compare/v0.1.14...v0.1.15) - 2026-04-18
+
+### Documentation
+
+- update CHANGELOG for v0.1.14 ([5b4a72c](https://github.com/limboy/tudu/commit/5b4a72cecd27afd5f18f374d0caed44be2d4d067))
+
+### Styles
+
+- update UpdateIndicator hover background and simplify tooltip text ([efab4cb](https://github.com/limboy/tudu/commit/efab4cbde683e6916b047ad36e62a5c0cb540423))
+
+### Chores
+
+- remove release.yml and update release configuration in package.json ([78b3499](https://github.com/limboy/tudu/commit/78b3499f76f7cc767163b9dcd5daf8bb59433333))
+
 ## [v0.1.14](https://github.com/limboy/tudu/compare/v0.1.13...v0.1.14) - 2026-04-18
 
 ### Refactoring
