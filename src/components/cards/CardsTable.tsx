@@ -89,6 +89,7 @@ export function CardsTable({
       reviewed: true,
       difficulty: true,
       retrievability: true,
+      created: true,
     }
   })
 
@@ -124,6 +125,9 @@ export function CardsTable({
             <TableHead className="pl-4">Front</TableHead>
             <TableHead className="w-[100px]">State</TableHead>
             <TableHead className="w-[120px]">Due</TableHead>
+            {visibleColumns.created && (
+              <TableHead className="w-[120px]">Created</TableHead>
+            )}
             {visibleColumns.reviewed && (
               <TableHead className="w-[120px]">Reviewed</TableHead>
             )}
@@ -142,6 +146,24 @@ export function CardsTable({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-40">
+                    <DropdownMenuItem
+                      onSelect={(e) => e.preventDefault()}
+                      className="flex items-center justify-between cursor-default"
+                    >
+                      <Label
+                        htmlFor="col-created"
+                        className="flex-1 cursor-pointer font-normal"
+                      >
+                        Created
+                      </Label>
+                      <Switch
+                        id="col-created"
+                        checked={visibleColumns.created}
+                        onCheckedChange={(checked) =>
+                          setVisibleColumns((v) => ({ ...v, created: checked }))
+                        }
+                      />
+                    </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={(e) => e.preventDefault()}
                       className="flex items-center justify-between cursor-default"
@@ -218,6 +240,11 @@ export function CardsTable({
               <TableCell className="w-[120px] text-muted-foreground">
                 {relativeFromNow(c.due)}
               </TableCell>
+              {visibleColumns.created && (
+                <TableCell className="w-[120px] text-muted-foreground">
+                  {relativeFromNow(c.createdAt)}
+                </TableCell>
+              )}
               {visibleColumns.reviewed && (
                 <TableCell className="w-[120px] text-muted-foreground">
                   {c.lastReview ? relativeFromNow(c.lastReview) : '—'}
