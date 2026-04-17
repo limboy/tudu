@@ -1,6 +1,6 @@
 {
   "name": "tudu",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "A flashcard app with spaced repetition",
   "author": "limboy",
   "private": true,
