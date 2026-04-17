@@ -3,6 +3,24 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.12](https://github.com/limboy/tudu/compare/v0.1.11...v0.1.12) - 2026-04-17
+
+### Features
+
+- add support for generating and persisting RELEASENOTES.md during release workflow ([6b25d35](https://github.com/limboy/tudu/commit/6b25d357edacc4533b05fb8a3b3c3318d81228f6))
+
+### Refactoring
+
+- remove unused Download icon from UpdateIndicator component ([5799a28](https://github.com/limboy/tudu/commit/5799a2812aa2f35c36a3ad66d1110c77e3ee548e))
+
+### Documentation
+
+- update CHANGELOG for v0.1.11 ([842f5a2](https://github.com/limboy/tudu/commit/842f5a2be4c8dfea69313c25b6d96d635615e565))
+
+### Styles
+
+- move text color class from Button to TooltipTrigger in UpdateIndicator ([1bcb1f3](https://github.com/limboy/tudu/commit/1bcb1f3ed45694c011a82293ffb24f2ccf659067))
+
 ## [v0.1.11](https://github.com/limboy/tudu/compare/v0.1.10...v0.1.11) - 2026-04-17
 
 ### Refactoring
