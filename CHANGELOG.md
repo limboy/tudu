@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.4](https://github.com/limboy/tudu/compare/v0.1.3...v0.1.4) - 2026-04-17
+
+### Chores
+
+- remove unnecessary exclusion patterns for node_modules in package.json ([59ce82e](https://github.com/limboy/tudu/commit/59ce82ec9f50a3fdc6a93a10f4ff2f236a2d4f5d))
+
 ## [v0.1.3](https://github.com/limboy/tudu/compare/v0.1.2...v0.1.3) - 2026-04-17
 
 ### Documentation
