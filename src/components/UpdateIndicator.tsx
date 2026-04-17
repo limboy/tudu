@@ -34,11 +34,11 @@ export function UpdateIndicator() {
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger asChild>
+        <TooltipTrigger asChild className='text-amber-600'>
           <Button
             size="sm"
             variant="outline"
-            className="h-7 px-3 text-xs shrink-0 rounded-full border-amber-600 text-amber-600 transition-all hover:scale-105 active:scale-95"
+            className="h-7 px-3 text-xs shrink-0 rounded-full border-amber-600 transition-all hover:scale-105 active:scale-95"
             disabled={applying}
             onClick={handleApply}
           >
