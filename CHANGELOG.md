@@ -3,10 +3,12 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
-## Unreleased
+## [v0.1.1](https://github.com/limboy/tudu/releases/tag/v0.1.1) - 2026-04-17
 
 ### Features
 
+- add auto-update functionality with electron-updater ([d781663](https://github.com/limboy/tudu/commit/d7816639a0d9ecf64e5090b4418105ebcfb2a521))
+- implement automated changelog generation and release notes workflow ([dbe888c](https://github.com/limboy/tudu/commit/dbe888c6c4ed6110b7d67ea930c53f956e202156))
 - add script to list and validate documentation metadata ([a9a57a1](https://github.com/limboy/tudu/commit/a9a57a19d00700675fcde504a166329361f8b632))
 - configure electron-builder for macOS production release and notarization ([3b3dec3](https://github.com/limboy/tudu/commit/3b3dec36bbefeee85a51ec5413797a0728cd46b0))
 - add .env.example template for Apple service configuration ([345203c](https://github.com/limboy/tudu/commit/345203cc91cde7445aae57a09c260bf6a2350a2d))
@@ -24,6 +26,10 @@ This file is generated automatically from [Conventional Commits](https://www.con
 - add window drag support, resizable layout panels, and a simplified card filter dropdown ([29ecc3c](https://github.com/limboy/tudu/commit/29ecc3cb3c3c26e19797a6f3a0c1ca0a95dcaf0f))
 - build flashcard app with decks, FSRS study, and SQLite persistence ([b2adb0f](https://github.com/limboy/tudu/commit/b2adb0fabdb129329484ccc5583ef3ec79ce9089))
 - initialize project with React, Electron, Vite, and shadcn/ui components ([f28d37c](https://github.com/limboy/tudu/commit/f28d37cd5dc4f9d0d6682a8d630a18446d549f5f))
+
+### Bug Fixes
+
+- update electron-updater import method and add to external dependencies ([52d3c17](https://github.com/limboy/tudu/commit/52d3c17bfb24c5f922869412e42dd03067c39b3e))
 
 ### Performance
 
@@ -56,5 +62,6 @@ This file is generated automatically from [Conventional Commits](https://www.con
 
 ### Chores
 
+- regenerate package-lock.json ([548e512](https://github.com/limboy/tudu/commit/548e51212cefcc7b8039326220ef1f6a7e585d7f))
 - optimize electron-builder to exclude build-time dependencies ([b14b0c0](https://github.com/limboy/tudu/commit/b14b0c044378faf1dc1c315595a53a8aff5bff77))
 - standardize build output directory to dist and update electron-builder configuration ([ed9e1f2](https://github.com/limboy/tudu/commit/ed9e1f216dbe4995955a35030d8385606476e575))
