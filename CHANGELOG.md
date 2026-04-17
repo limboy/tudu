@@ -3,6 +3,16 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.8](https://github.com/limboy/tudu/compare/v0.1.7...v0.1.8) - 2026-04-17
+
+### Refactoring
+
+- replace UpdateBanner with a compact UpdateIndicator component in the TopBar ([01d98bb](https://github.com/limboy/tudu/commit/01d98bba406a0f6bf2b418e60fc8861bcd6d272b))
+
+### Documentation
+
+- update CHANGELOG for v0.1.7 ([b439f6b](https://github.com/limboy/tudu/commit/b439f6b8ebbb1c9ff7f5e674d6d2fd79ea0a2020))
+
 ## [v0.1.7](https://github.com/limboy/tudu/compare/v0.1.6...v0.1.7) - 2026-04-17
 
 ### Chores
