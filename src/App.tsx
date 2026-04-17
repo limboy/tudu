@@ -7,7 +7,6 @@ import { CardsTable } from '@/components/cards/CardsTable'
 import { CardEditor } from '@/components/cards/CardEditor'
 import { DeckStatsPanel } from '@/components/stats/DeckStatsPanel'
 import { StudyView } from '@/components/study/StudyView'
-import { UpdateBanner } from '@/components/UpdateBanner'
 import { useDecks } from '@/hooks/useDecks'
 import { useCards } from '@/hooks/useCards'
 import { useDeckStats } from '@/hooks/useDeckStats'
@@ -70,7 +69,6 @@ export default function App() {
   return (
     <>
       <div className="h-screen w-screen flex flex-col overflow-hidden bg-background text-foreground">
-        <UpdateBanner />
         <TopBar
           deckName={selectedDeck?.name ?? null}
           leftOpen={leftOpen}

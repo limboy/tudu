@@ -1,5 +1,6 @@
 import { PanelLeft, PanelRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { UpdateIndicator } from '@/components/UpdateIndicator'
 
 export function TopBar({
   deckName,
@@ -36,6 +37,7 @@ export function TopBar({
       </h1>
 
       <div className="app-no-drag flex items-center gap-2 shrink-0">
+        <UpdateIndicator />
         <Button
           size="icon"
           variant="ghost"
