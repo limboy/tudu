@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, type ReactNode } from 'react'
 
-const LEFT_MIN = 160
-const LEFT_MAX = 480
-const RIGHT_MIN = 240
-const RIGHT_MAX = 560
+const LEFT_MIN = 200
+const LEFT_MAX = 400
+const RIGHT_MIN = 300
+const RIGHT_MAX = 500
 
 export function ThreePane({
   left,
@@ -23,22 +23,22 @@ export function ThreePane({
   rightOpen: boolean
   leftWidth: number
   rightWidth: number
-  onLeftWidthChange: (w: number) => void
-  onRightWidthChange: (w: number) => void
+  onLeftWidthChange: (update: any) => void
+  onRightWidthChange: (update: any) => void
 }) {
   return (
-    <div className="flex-1 min-h-0 flex overflow-hidden bg-background text-foreground">
+    <div className="flex-1 min-h-0 flex overflow-hidden bg-background text-foreground relative">
       {leftOpen && (
         <>
           <aside
-            className="shrink-0 border-r bg-secondary/40 backdrop-blur-sm overflow-hidden"
+            className="shrink-0 border-r bg-secondary/40 backdrop-blur-sm overflow-hidden relative z-20"
             style={{ width: leftWidth }}
           >
             {left}
           </aside>
           <Resizer
             onResize={(dx) =>
-              onLeftWidthChange(clamp(leftWidth + dx, LEFT_MIN, LEFT_MAX))
+              onLeftWidthChange((prev: number) => clamp(prev + dx, LEFT_MIN, LEFT_MAX))
             }
           />
         </>
@@ -48,11 +48,11 @@ export function ThreePane({
         <>
           <Resizer
             onResize={(dx) =>
-              onRightWidthChange(clamp(rightWidth - dx, RIGHT_MIN, RIGHT_MAX))
+              onRightWidthChange((prev: number) => clamp(prev - dx, RIGHT_MIN, RIGHT_MAX))
             }
           />
           <aside
-            className="shrink-0 border-l overflow-hidden"
+            className="shrink-0 border-l overflow-hidden relative z-20"
             style={{ width: rightWidth }}
           >
             {right}
@@ -69,16 +69,15 @@ function clamp(n: number, min: number, max: number) {
 
 function Resizer({ onResize }: { onResize: (dx: number) => void }) {
   const lastX = useRef<number | null>(null)
+  const onResizeRef = useRef(onResize)
+  onResizeRef.current = onResize
 
-  const onMove = useCallback(
-    (e: MouseEvent) => {
-      if (lastX.current == null) return
-      const dx = e.clientX - lastX.current
-      lastX.current = e.clientX
-      if (dx !== 0) onResize(dx)
-    },
-    [onResize],
-  )
+  const onMove = useCallback((e: MouseEvent) => {
+    if (lastX.current == null) return
+    const dx = e.clientX - lastX.current
+    lastX.current = e.clientX
+    if (dx !== 0) onResizeRef.current(dx)
+  }, [])
 
   const onUp = useCallback(() => {
     lastX.current = null
@@ -109,7 +108,7 @@ function Resizer({ onResize }: { onResize: (dx: number) => void }) {
       role="separator"
       aria-orientation="vertical"
       onMouseDown={onDown}
-      className="w-1 shrink-0 cursor-col-resize bg-transparent hover:bg-border/80 active:bg-border transition-colors -mr-1 z-10"
+      className="w-1 shrink-0 cursor-col-resize bg-transparent hover:bg-border/80 active:bg-border transition-colors -mr-1 z-30"
     />
   )
 }
