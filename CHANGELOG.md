@@ -3,6 +3,16 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.9](https://github.com/limboy/tudu/compare/v0.1.8...v0.1.9) - 2026-04-17
+
+### Features
+
+- configure GitHub release categories and update changelog generator to include non-conventional commits and full comparison links ([c15303d](https://github.com/limboy/tudu/commit/c15303d995d8544c6d6b322ec5b5b5860c42c95d))
+
+### Documentation
+
+- update CHANGELOG for v0.1.8 ([4565158](https://github.com/limboy/tudu/commit/4565158f4c3a838d3fdb5c31f9164fc2028b2f12))
+
 ## [v0.1.8](https://github.com/limboy/tudu/compare/v0.1.7...v0.1.8) - 2026-04-17
 
 ### Refactoring
