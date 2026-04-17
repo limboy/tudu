@@ -3,6 +3,16 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.16](https://github.com/limboy/tudu/compare/v0.1.15...v0.1.16) - 2026-04-18
+
+### Bug Fixes
+
+- **build:** correct electron-builder publish configuration ([266e36b](https://github.com/limboy/tudu/commit/266e36b219c063e085e0f3e02385073b2298784b))
+
+### Documentation
+
+- update CHANGELOG for v0.1.15 ([b0bfd24](https://github.com/limboy/tudu/commit/b0bfd24b90daf5046bdf2817eddd5cb425630847))
+
 ## [v0.1.15](https://github.com/limboy/tudu/compare/v0.1.14...v0.1.15) - 2026-04-18
 
 ### Documentation
