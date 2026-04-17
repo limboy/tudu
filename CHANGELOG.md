@@ -3,6 +3,16 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.17](https://github.com/limboy/tudu/compare/v0.1.16...v0.1.17) - 2026-04-18
+
+### Bug Fixes
+
+- **ci:** ensure RELEASENOTES.md is preserved during branch checkout ([c3f9c76](https://github.com/limboy/tudu/commit/c3f9c761bbc984736d00fcaf8e9b6b5359f6345d))
+
+### Documentation
+
+- update CHANGELOG for v0.1.16 ([73f0de1](https://github.com/limboy/tudu/commit/73f0de109ffeb402138761b3709b2cae644ea00f))
+
 ## [v0.1.16](https://github.com/limboy/tudu/compare/v0.1.15...v0.1.16) - 2026-04-18
 
 ### Bug Fixes
