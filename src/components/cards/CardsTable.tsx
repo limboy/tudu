@@ -305,8 +305,8 @@ export function CardsTable({
 
   return (
     <div className="flex-1 overflow-auto">
-      <Table>
-        <TableHeader className="sticky top-0 bg-muted/50 backdrop-blur-sm z-10">
+      <Table containerClassName="overflow-x-visible">
+        <TableHeader className="sticky top-0 bg-muted z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
