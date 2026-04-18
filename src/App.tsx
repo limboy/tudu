@@ -100,12 +100,13 @@ export default function App() {
           deckName={selectedDeck?.name ?? null}
           leftOpen={leftOpen}
           rightOpen={rightOpen}
+          showRightToggle={decks.length > 0}
           onToggleLeft={() => setLeftOpen((v) => !v)}
           onToggleRight={() => setRightOpen((v) => !v)}
         />
         <ThreePane
           leftOpen={leftOpen}
-          rightOpen={rightOpen}
+          rightOpen={decks.length > 0 && rightOpen}
           leftWidth={leftWidth}
           rightWidth={rightWidth}
           onLeftWidthChange={setLeftWidth}
@@ -136,8 +137,10 @@ export default function App() {
                 />
               </>
             ) : (
-              <div className="flex-1 flex items-center justify-center text-sm text-muted-foreground">
-                Select or create a deck to get started
+              <div className="flex-1 select-none flex items-center justify-center text-sm text-muted-foreground">
+                {decks.length > 0
+                  ? 'Select or create a deck to get started'
+                  : 'Create a deck to start'}
               </div>
             )
           }

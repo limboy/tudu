@@ -70,7 +70,7 @@ export function DeckSidebar({
       </div>
       <div className="flex-1 overflow-y-auto px-1">
         {decks.length === 0 && (
-          <div className="px-3 py-2 text-xs text-muted-foreground">
+          <div className="px-3 py-2 text-xs text-muted-foreground select-none">
             No decks yet
           </div>
         )}

@@ -8,10 +8,12 @@ export function TopBar({
   rightOpen,
   onToggleLeft,
   onToggleRight,
+  showRightToggle,
 }: {
   deckName: string | null
   leftOpen: boolean
   rightOpen: boolean
+  showRightToggle?: boolean
   onToggleLeft: () => void
   onToggleRight: () => void
 }) {
@@ -33,21 +35,23 @@ export function TopBar({
       </div>
 
       <h1 className="flex-1 min-w-0 text-sm font-medium tracking-tight truncate text-center">
-        {deckName ?? 'No deck selected'}
+        {showRightToggle ? (deckName ?? 'No deck selected') : ''}
       </h1>
 
       <div className="app-no-drag flex items-center gap-2 shrink-0">
         <UpdateIndicator />
-        <Button
-          size="icon"
-          variant="ghost"
-          className="size-7"
-          aria-label={rightOpen ? 'Hide stats sidebar' : 'Show stats sidebar'}
-          aria-pressed={rightOpen}
-          onClick={onToggleRight}
-        >
-          <PanelRight className="size-4" />
-        </Button>
+        {showRightToggle && (
+          <Button
+            size="icon"
+            variant="ghost"
+            className="size-7"
+            aria-label={rightOpen ? 'Hide stats sidebar' : 'Show stats sidebar'}
+            aria-pressed={rightOpen}
+            onClick={onToggleRight}
+          >
+            <PanelRight className="size-4" />
+          </Button>
+        )}
       </div>
     </header>
   )
