@@ -3,6 +3,25 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.25](https://github.com/limboy/tudu/compare/v0.1.24...v0.1.25) - 2026-04-18
+
+### Features
+
+- hide right sidebar and deck title when no decks exist ([f8ca79a](https://github.com/limboy/tudu/commit/f8ca79a7972277167d99c28198ea6cfec1b19e0b))
+- add keyboard shortcuts for adding cards and starting study sessions ([b3c7a21](https://github.com/limboy/tudu/commit/b3c7a21dde4b635f62f2b5e8014eaab4426d8a9e))
+
+### Bug Fixes
+
+- **ui:** keep sidebar resizer anchored to the cursor ([80857e8](https://github.com/limboy/tudu/commit/80857e81437b91c4a3299076d80b1bb3f31bfab8))
+
+### Documentation
+
+- update CHANGELOG for v0.1.24 ([3f22ca2](https://github.com/limboy/tudu/commit/3f22ca2995c89d292337d5c1eb14c05070d9e5bd))
+
+### Styles
+
+- adjust search input width constraints in CardsFilters ([f3306c6](https://github.com/limboy/tudu/commit/f3306c6323108c19dd27bae8b29e748d6ea23bcc))
+
 ## [v0.1.24](https://github.com/limboy/tudu/compare/v0.1.23...v0.1.24) - 2026-04-18
 
 ### Documentation
