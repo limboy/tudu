@@ -6,6 +6,7 @@ if (process.platform === 'darwin') {
   app.name = 'Tudu'
 }
 
+import { manageWindowState } from './window-state.js'
 import pkg from 'electron-updater'
 const { autoUpdater } = pkg
 import { initDatabase } from './db/index.js'
@@ -29,9 +30,14 @@ function createWindow() {
   const iconPath = path.join(appRoot, 'assets/icon.png')
   const icon = nativeImage.createFromPath(iconPath)
 
+  const windowManager = manageWindowState('main', 1100, 720)
+  const { state } = windowManager
+
   win = new BrowserWindow({
-    width: 1100,
-    height: 720,
+    x: state.x,
+    y: state.y,
+    width: state.width,
+    height: state.height,
     minWidth: 640,
     minHeight: 480,
     icon: icon,
@@ -41,6 +47,12 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.mjs'),
     },
   })
+
+  if (state.isMaximized) {
+    win.maximize()
+  }
+
+  windowManager.track(win)
 
   if (process.platform === 'darwin' && app.dock) {
     app.dock.setIcon(icon)
