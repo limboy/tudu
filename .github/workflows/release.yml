@@ -42,8 +42,12 @@ jobs:
             # Update changelog and commit
             cp /tmp/CHANGELOG.md CHANGELOG.md
             git add CHANGELOG.md
-            git commit -m "docs: update CHANGELOG for ${GITHUB_REF_NAME}"
-            git push origin main
+            if git diff --cached --quiet; then
+              echo "CHANGELOG.md already up to date on main; skipping commit"
+            else
+              git commit -m "docs: update CHANGELOG for ${GITHUB_REF_NAME}"
+              git push origin main
+            fi
           fi
 
       - name: Generate release notes for build
@@ -70,7 +74,19 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-        run: npx electron-builder --mac --publish always
+        run: |
+          for attempt in 1 2 3; do
+            echo "::group::electron-builder attempt $attempt"
+            if npx electron-builder --mac --publish always; then
+              echo "::endgroup::"
+              exit 0
+            fi
+            echo "::endgroup::"
+            echo "Attempt $attempt failed (likely transient notarization timeout). Retrying in 30s..."
+            sleep 30
+          done
+          echo "All attempts failed"
+          exit 1
 
       - name: Update GitHub release notes
         run: |
