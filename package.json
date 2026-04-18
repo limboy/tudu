@@ -98,6 +98,7 @@
     "vite-plugin-electron": "^0.29.1"
   },
   "dependencies": {
+    "@tanstack/react-table": "^8.21.3",
     "better-sqlite3": "^12.9.0",
     "electron-updater": "^6.8.3"
   }

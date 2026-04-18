@@ -1,5 +1,10 @@
-import { useEffect, useState } from 'react'
-import { MoreHorizontal } from 'lucide-react'
+import { useEffect, useState, useMemo } from 'react'
+import {
+  MoreHorizontal,
+  ArrowUp,
+  ArrowDown,
+  ChevronsUpDown
+} from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +26,17 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import type { Card, CardState } from '@/types'
 import { CardStateValues } from '@/types'
+import {
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table'
+import type {
+  ColumnDef,
+  SortingState,
+  VisibilityState,
+} from '@tanstack/react-table'
 
 const STATE_LABEL: Record<CardState, string> = {
   [CardStateValues.New]: 'New',
@@ -67,6 +83,28 @@ function relativeFromNow(ms: number): string {
 
 const STORAGE_KEY = 'tudu-visible-columns'
 
+function SortableHeader({ column, title }: { column: any, title: string }) {
+  return (
+    <div className="flex items-center">
+      <Button
+        variant="ghost"
+        size="sm"
+        className="-ml-3 h-8 data-[state=open]:bg-accent"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        <span>{title}</span>
+        {column.getIsSorted() === 'desc' ? (
+          <ArrowDown className="h-3 w-3" strokeWidth={1.5} />
+        ) : column.getIsSorted() === 'asc' ? (
+          <ArrowUp className="h-3 w-3" strokeWidth={1.5} />
+        ) : (
+          <ChevronsUpDown className="text-muted-foreground/60" strokeWidth={1} size={10} />
+        )}
+      </Button>
+    </div>
+  )
+}
+
 export function CardsTable({
   cards,
   loading,
@@ -76,31 +114,41 @@ export function CardsTable({
   loading: boolean
   onRowClick: (card: Card) => void
 }) {
-  const [visibleColumns, setVisibleColumns] = useState<{
-    reviewed: boolean
-    difficulty: boolean
-    retrievability: boolean
-    created: boolean
-  }>(() => {
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(() => {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
       try {
-        return JSON.parse(saved)
+        const parsed = JSON.parse(saved)
+        if ('reviewed' in parsed) {
+          return {
+            lastReview: parsed.reviewed,
+            difficulty: parsed.difficulty,
+            retrievability: parsed.retrievability,
+            createdAt: parsed.created,
+          }
+        }
+        return parsed
       } catch (e) {
         // ignore
       }
     }
     return {
-      reviewed: true,
+      lastReview: true,
       difficulty: true,
       retrievability: true,
-      created: true,
+      createdAt: true,
     }
   })
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(visibleColumns))
-  }, [visibleColumns])
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      reviewed: columnVisibility.lastReview ?? true,
+      difficulty: columnVisibility.difficulty ?? true,
+      retrievability: columnVisibility.retrievability ?? true,
+      created: columnVisibility.createdAt ?? true,
+    }))
+  }, [columnVisibility])
 
   // Update relative times every minute
   const [, setTick] = useState(0)
@@ -108,6 +156,139 @@ export function CardsTable({
     const timer = setInterval(() => setTick((t) => t + 1), 60000)
     return () => clearInterval(timer)
   }, [])
+
+  const columns = useMemo<ColumnDef<Card>[]>(() => [
+    {
+      id: 'front',
+      accessorFn: (row) => previewText(row.frontMd) || '',
+      header: ({ column }) => <SortableHeader column={column} title="Front" />,
+      cell: ({ getValue }) => (
+        <div className="truncate">{getValue() as string || '—'}</div>
+      ),
+    },
+    {
+      accessorKey: 'state',
+      header: ({ column }) => <SortableHeader column={column} title="State" />,
+      cell: ({ row }) => (
+        <Badge variant={STATE_VARIANT[row.original.state as CardState]}>
+          {STATE_LABEL[row.original.state as CardState]}
+        </Badge>
+      ),
+    },
+    {
+      accessorKey: 'due',
+      header: ({ column }) => <SortableHeader column={column} title="Due" />,
+      cell: ({ row }) => {
+        const c = row.original
+        return (
+          <span className={cn(
+            c.due < Date.now()
+              ? 'text-orange-600 dark:text-orange-400'
+              : 'text-muted-foreground'
+          )}>
+            {relativeFromNow(c.due)}
+          </span>
+        )
+      },
+    },
+    {
+      accessorKey: 'createdAt',
+      header: ({ column }) => <SortableHeader column={column} title="Created" />,
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">{relativeFromNow(row.original.createdAt)}</span>
+      ),
+    },
+    {
+      accessorKey: 'lastReview',
+      header: ({ column }) => <SortableHeader column={column} title="Reviewed" />,
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {row.original.lastReview ? relativeFromNow(row.original.lastReview) : '—'}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'difficulty',
+      header: ({ column }) => <SortableHeader column={column} title="Difficulty" />,
+      cell: ({ row }) => (
+        <span className="tabular-nums">
+          {row.original.state === 0 ? '—' : row.original.difficulty.toFixed(2)}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'retrievability',
+      header: ({ column }) => <SortableHeader column={column} title="Retrievability" />,
+      cell: ({ row }) => (
+        <span className="tabular-nums">
+          {row.original.state === 0 ? '—' : `${Math.round(row.original.retrievability * 100)}%`}
+        </span>
+      ),
+    },
+    {
+      id: 'actions',
+      header: ({ table }) => {
+        return (
+          <div className="flex justify-end pr-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                {['createdAt', 'lastReview', 'difficulty', 'retrievability'].map(colId => {
+                  const column = table.getColumn(colId)
+                  if (!column) return null
+                  const labelMap: Record<string, string> = {
+                    createdAt: 'Created',
+                    lastReview: 'Reviewed',
+                    difficulty: 'Difficulty',
+                    retrievability: 'Retrievability'
+                  }
+                  return (
+                    <DropdownMenuItem
+                      key={colId}
+                      onSelect={(e) => e.preventDefault()}
+                      className="flex items-center justify-between cursor-default"
+                    >
+                      <Label
+                        htmlFor={`col-${colId}`}
+                        className="flex-1 cursor-pointer font-normal"
+                      >
+                        {labelMap[colId]}
+                      </Label>
+                      <Switch
+                        id={`col-${colId}`}
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(v) => column.toggleVisibility(!!v)}
+                      />
+                    </DropdownMenuItem>
+                  )
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )
+      },
+      cell: () => null,
+      enableSorting: false,
+      enableHiding: false,
+    }
+  ], [])
+
+  const table = useReactTable({
+    data: cards,
+    columns,
+    state: {
+      sorting,
+      columnVisibility,
+    },
+    onSortingChange: setSorting,
+    onColumnVisibilityChange: setColumnVisibility,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  })
 
   if (loading && cards.length === 0) {
     return (
@@ -125,156 +306,63 @@ export function CardsTable({
   return (
     <div className="flex-1 overflow-auto">
       <Table>
-        <TableHeader className="sticky top-0 bg-background/95 backdrop-blur-sm z-10">
-          <TableRow>
-            <TableHead className="pl-4">Front</TableHead>
-            <TableHead className="w-25">State</TableHead>
-            <TableHead className="w-30">Due</TableHead>
-            {visibleColumns.created && (
-              <TableHead className="w-30">Created</TableHead>
-            )}
-            {visibleColumns.reviewed && (
-              <TableHead className="w-30">Reviewed</TableHead>
-            )}
-            {visibleColumns.difficulty && (
-              <TableHead className="w-30">Difficulty</TableHead>
-            )}
-            {visibleColumns.retrievability && (
-              <TableHead className="w-30">Retrievability</TableHead>
-            )}
-            <TableHead className="w-10 p-0">
-              <div className="flex justify-center pr-4">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-40">
-                    <DropdownMenuItem
-                      onSelect={(e) => e.preventDefault()}
-                      className="flex items-center justify-between cursor-default"
-                    >
-                      <Label
-                        htmlFor="col-created"
-                        className="flex-1 cursor-pointer font-normal"
-                      >
-                        Created
-                      </Label>
-                      <Switch
-                        id="col-created"
-                        checked={visibleColumns.created}
-                        onCheckedChange={(checked) =>
-                          setVisibleColumns((v) => ({ ...v, created: checked }))
-                        }
-                      />
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={(e) => e.preventDefault()}
-                      className="flex items-center justify-between cursor-default"
-                    >
-                      <Label
-                        htmlFor="col-reviewed"
-                        className="flex-1 cursor-pointer font-normal"
-                      >
-                        Reviewed
-                      </Label>
-                      <Switch
-                        id="col-reviewed"
-                        checked={visibleColumns.reviewed}
-                        onCheckedChange={(checked) =>
-                          setVisibleColumns((v) => ({ ...v, reviewed: checked }))
-                        }
-                      />
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={(e) => e.preventDefault()}
-                      className="flex items-center justify-between cursor-default"
-                    >
-                      <Label
-                        htmlFor="col-difficulty"
-                        className="flex-1 cursor-pointer font-normal"
-                      >
-                        Difficulty
-                      </Label>
-                      <Switch
-                        id="col-difficulty"
-                        checked={visibleColumns.difficulty}
-                        onCheckedChange={(checked) =>
-                          setVisibleColumns((v) => ({ ...v, difficulty: checked }))
-                        }
-                      />
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={(e) => e.preventDefault()}
-                      className="flex items-center justify-between cursor-default"
-                    >
-                      <Label
-                        htmlFor="col-retrievability"
-                        className="flex-1 cursor-pointer font-normal"
-                      >
-                        Retrievability
-                      </Label>
-                      <Switch
-                        id="col-retrievability"
-                        checked={visibleColumns.retrievability}
-                        onCheckedChange={(checked) =>
-                          setVisibleColumns((v) => ({ ...v, retrievability: checked }))
-                        }
-                      />
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {cards.map((c) => (
-            <TableRow
-              key={c.id}
-              className={cn('cursor-pointer')}
-              onClick={() => onRowClick(c)}
-            >
-              <TableCell className="max-w-0 pl-4">
-                <div className="truncate">{previewText(c.frontMd) || '—'}</div>
-              </TableCell>
-              <TableCell className="w-25">
-                <Badge variant={STATE_VARIANT[c.state]}>{STATE_LABEL[c.state]}</Badge>
-              </TableCell>
-              <TableCell
-                className={cn(
-                  'w-30',
-                  c.due < Date.now()
-                    ? 'text-orange-600 dark:text-orange-400'
-                    : 'text-muted-foreground',
-                )}
-              >
-                {relativeFromNow(c.due)}
-              </TableCell>
-              {visibleColumns.created && (
-                <TableCell className="w-30 text-muted-foreground">
-                  {relativeFromNow(c.createdAt)}
-                </TableCell>
-              )}
-              {visibleColumns.reviewed && (
-                <TableCell className="w-30 text-muted-foreground">
-                  {c.lastReview ? relativeFromNow(c.lastReview) : '—'}
-                </TableCell>
-              )}
-              {visibleColumns.difficulty && (
-                <TableCell className="w-30 tabular-nums">
-                  {c.state === 0 ? '—' : c.difficulty.toFixed(2)}
-                </TableCell>
-              )}
-              {visibleColumns.retrievability && (
-                <TableCell className="w-30 tabular-nums">
-                  {c.state === 0 ? '—' : `${Math.round(c.retrievability * 100)}%`}
-                </TableCell>
-              )}
-              <TableCell className="w-10 p-0" />
+        <TableHeader className="sticky top-0 bg-muted/50 backdrop-blur-sm z-10">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                const widthMap: Record<string, string> = {
+                  front: 'w-full min-w-[300px]',
+                  state: 'w-[100px]',
+                  due: 'w-[120px]',
+                  createdAt: 'w-[120px]',
+                  lastReview: 'w-[120px]',
+                  difficulty: 'w-[120px]',
+                  retrievability: 'w-[120px]',
+                  actions: 'w-10 p-0',
+                }
+                return (
+                  <TableHead
+                    key={header.id}
+                    className={cn(header.id === 'front' ? 'pl-5' : '', widthMap[header.id] || 'w-auto')}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                )
+              })}
             </TableRow>
           ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+                className="cursor-pointer"
+                onClick={() => onRowClick(row.original)}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className={cn(cell.column.id === 'front' ? 'pl-5 max-w-0' : '')}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>
