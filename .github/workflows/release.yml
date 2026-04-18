@@ -32,6 +32,7 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             cp CHANGELOG.md /tmp/CHANGELOG.md
+            cp RELEASENOTES.md /tmp/RELEASENOTES.md
             
             # Clean up and switch to main
             git reset --hard
@@ -43,13 +44,13 @@ jobs:
             git add CHANGELOG.md
             git commit -m "docs: update CHANGELOG for ${GITHUB_REF_NAME}"
             git push origin main
-            
-            # Return to the tag
-            git checkout ${GITHUB_REF_NAME}
           fi
 
-      - name: Generate final RELEASENOTES.md
-        run: npm run changelog
+      - name: Ensure RELEASENOTES.md exists for release
+        run: |
+          # Make sure we have the latest release notes
+          npm run changelog
+          # Don't return to tag - stay on main for build step
 
       - name: Build renderer
         run: npm run build:renderer
