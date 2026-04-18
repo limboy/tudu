@@ -1,5 +1,8 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import 'katex/dist/katex.min.css'
 import { cn } from '@/lib/utils'
 
 export function MarkdownView({
@@ -30,7 +33,12 @@ export function MarkdownView({
         className,
       )}
     >
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{source}</ReactMarkdown>
+      <ReactMarkdown 
+        remarkPlugins={[remarkGfm, remarkMath]} 
+        rehypePlugins={[rehypeKatex]}
+      >
+        {source}
+      </ReactMarkdown>
     </div>
   )
 }
