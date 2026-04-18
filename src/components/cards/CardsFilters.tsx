@@ -92,7 +92,7 @@ export function CardsFilters({
   return (
     <div className="border-b bg-background/80 backdrop-blur-sm px-4 py-2 space-y-2">
       <div className="flex items-center gap-2">
-        <div className="relative flex-1 min-w-50 max-w-[320px]">
+        <div className="relative flex-1 min-w-30 max-w-60">
           <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
           <Input
             value={filter.search ?? ''}
@@ -101,7 +101,7 @@ export function CardsFilters({
             className="h-8 pl-7 text-sm"
           />
         </div>
-        
+
         <Select value={currentSelectValue} onValueChange={onFilterChange}>
           <SelectTrigger size="sm" className="w-35">
             <SelectValue placeholder="All Cards" />
