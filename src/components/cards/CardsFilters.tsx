@@ -149,10 +149,16 @@ export function CardsFilters({
           <Button size="sm" variant="outline" className="h-8" onClick={onAdd}>
             <Plus className="size-3.5" />
             Add
+            <kbd className="ml-1 rounded border bg-muted px-1 text-[10px] font-medium text-muted-foreground">
+              A
+            </kbd>
           </Button>
           <Button size="sm" className="h-8" onClick={onStudy} disabled={!canStudy}>
             <Play className="size-3.5" />
             Study
+            <kbd className="ml-1 rounded border border-primary-foreground/30 bg-primary-foreground/15 px-1 text-[10px] font-medium text-primary-foreground/90">
+              S
+            </kbd>
           </Button>
         </div>
       </div>

@@ -66,6 +66,33 @@ export default function App() {
   const canStudy =
     !!stats && stats.counts.total > 0 && (stats.dueToday > 0 || stats.counts.new > 0)
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return
+      if (editorOpen || studying) return
+      const t = e.target as HTMLElement | null
+      if (
+        t &&
+        (t.tagName === 'INPUT' ||
+          t.tagName === 'TEXTAREA' ||
+          t.isContentEditable)
+      ) {
+        return
+      }
+      if (e.key === 'a' || e.key === 'A') {
+        if (selectedDeckId == null) return
+        e.preventDefault()
+        openAdd()
+      } else if (e.key === 's' || e.key === 'S') {
+        if (!canStudy) return
+        e.preventDefault()
+        setStudying(true)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [editorOpen, studying, selectedDeckId, canStudy])
+
   return (
     <>
       <div className="h-screen w-screen flex flex-col overflow-hidden bg-background text-foreground">
