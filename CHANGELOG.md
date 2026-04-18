@@ -3,6 +3,18 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.22](https://github.com/limboy/tudu/compare/v0.1.21...v0.1.22) - 2026-04-18
+
+### Features
+
+- migrate CardsTable to TanStack Table for sorting and column visibility management ([18a6468](https://github.com/limboy/tudu/commit/18a6468c3dfa990a57f8925755105af5118e7daa))
+- add drag-and-drop support for importing deck files ([41fb2a4](https://github.com/limboy/tudu/commit/41fb2a4da000caf312690c568869fd1eece6f769))
+
+### Documentation
+
+- add screenshots to README for better visual representation ([58a9132](https://github.com/limboy/tudu/commit/58a9132ced6957e70f2c81fecac3b9c1bfcd32e1))
+- update CHANGELOG for v0.1.21 ([dfde961](https://github.com/limboy/tudu/commit/dfde961a72eafcd5a536500bfa5ff5ffcc22a105))
+
 ## [v0.1.21](https://github.com/limboy/tudu/compare/v0.1.20...v0.1.21) - 2026-04-18
 
 ### Bug Fixes
