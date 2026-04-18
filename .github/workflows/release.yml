@@ -32,11 +32,19 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             cp CHANGELOG.md /tmp/CHANGELOG.md
+            
+            # Clean up and switch to main
+            git reset --hard
             git fetch origin main
-            git checkout -B main origin/main
+            git checkout main
+            
+            # Update changelog and commit
             cp /tmp/CHANGELOG.md CHANGELOG.md
             git add CHANGELOG.md
-            git commit -m "docs: update CHANGELOG for ${GITHUB_REF_NAME}" && git push origin main || true
+            git commit -m "docs: update CHANGELOG for ${GITHUB_REF_NAME}"
+            git push origin main
+            
+            # Return to the tag
             git checkout ${GITHUB_REF_NAME}
           fi
 
