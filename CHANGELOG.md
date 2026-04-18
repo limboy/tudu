@@ -3,6 +3,19 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.23](https://github.com/limboy/tudu/compare/v0.1.22...v0.1.23) - 2026-04-18
+
+### Features
+
+- implement persistent window state management for main application window ([55f759a](https://github.com/limboy/tudu/commit/55f759abaf595cb671d5293f9da83dc8f6a511b3))
+- add LaTeX math support to MarkdownView using remark-math and rehype-katex ([3a6943b](https://github.com/limboy/tudu/commit/3a6943b875b26e4e6931aaa245117620e5a31e79))
+
+### Documentation
+
+- update architecture and data model documentation to include window state persistence details ([e052bfe](https://github.com/limboy/tudu/commit/e052bfebdd2c736339b92844aeb8877345febfb3))
+- add documentation for Markdown rendering features and implementation details ([f797b49](https://github.com/limboy/tudu/commit/f797b49c9467f66a5991c2cb3c22660e25554040))
+- update CHANGELOG for v0.1.22 ([8be46dc](https://github.com/limboy/tudu/commit/8be46dcaae1a2a83197431ac5eac301d1758981c))
+
 ## [v0.1.22](https://github.com/limboy/tudu/compare/v0.1.21...v0.1.22) - 2026-04-18
 
 ### Features
