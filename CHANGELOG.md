@@ -3,6 +3,16 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.24](https://github.com/limboy/tudu/compare/v0.1.23...v0.1.24) - 2026-04-18
+
+### Documentation
+
+- update CHANGELOG for v0.1.23 ([a01d0a7](https://github.com/limboy/tudu/commit/a01d0a7e81928c39d19709fd85ec2a867c8144c7))
+
+### CI
+
+- retry notarization and guard changelog commit on re-runs ([6d4b10d](https://github.com/limboy/tudu/commit/6d4b10dafaa89f37d85f063b759c084fed579739))
+
 ## [v0.1.23](https://github.com/limboy/tudu/compare/v0.1.22...v0.1.23) - 2026-04-18
 
 ### Features
