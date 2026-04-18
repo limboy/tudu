@@ -46,11 +46,18 @@ jobs:
             git push origin main
           fi
 
-      - name: Ensure RELEASENOTES.md exists for release
+      - name: Generate release notes for build
         run: |
-          # Make sure we have the latest release notes
+          # Generate fresh release notes - must be on a branch for git log to work correctly
+          # If we're in detached HEAD, switch to main first
+          if git rev-parse --abbrev-ref HEAD | grep -q detached; then
+            git fetch origin main
+            git checkout main
+          fi
           npm run changelog
-          # Don't return to tag - stay on main for build step
+          # Verify the file was created and has content
+          test -s RELEASENOTES.md || exit 1
+          echo "Release notes generated successfully"
 
       - name: Build renderer
         run: npm run build:renderer
@@ -64,3 +71,10 @@ jobs:
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: npx electron-builder --mac --publish always
+
+      - name: Update GitHub release notes
+        run: |
+          RELEASE_NOTES=$(cat RELEASENOTES.md)
+          gh release edit ${GITHUB_REF_NAME} --notes "$RELEASE_NOTES" || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
