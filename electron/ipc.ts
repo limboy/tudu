@@ -157,30 +157,34 @@ export function registerIpc(): void {
     }
   })
 
-  ipcMain.handle('decks:import', async (e): Promise<ImportResult> => {
+  ipcMain.handle('decks:import', async (e, filePath?: string): Promise<ImportResult> => {
     try {
-      const win = BrowserWindow.fromWebContents(e.sender) ?? undefined
-      const result = win
-        ? await dialog.showOpenDialog(win, {
-            title: 'Import deck',
-            properties: ['openFile'],
-            filters: [
-              { name: 'Tudu deck', extensions: ['json'] },
-              { name: 'All files', extensions: ['*'] },
-            ],
-          })
-        : await dialog.showOpenDialog({
-            title: 'Import deck',
-            properties: ['openFile'],
-            filters: [
-              { name: 'Tudu deck', extensions: ['json'] },
-              { name: 'All files', extensions: ['*'] },
-            ],
-          })
-      if (result.canceled || result.filePaths.length === 0) {
-        return { ok: false, canceled: true }
+      let selectedPath = filePath
+      if (!selectedPath) {
+        const win = BrowserWindow.fromWebContents(e.sender) ?? undefined
+        const result = win
+          ? await dialog.showOpenDialog(win, {
+              title: 'Import deck',
+              properties: ['openFile'],
+              filters: [
+                { name: 'Tudu deck', extensions: ['json'] },
+                { name: 'All files', extensions: ['*'] },
+              ],
+            })
+          : await dialog.showOpenDialog({
+              title: 'Import deck',
+              properties: ['openFile'],
+              filters: [
+                { name: 'Tudu deck', extensions: ['json'] },
+                { name: 'All files', extensions: ['*'] },
+              ],
+            })
+        if (result.canceled || result.filePaths.length === 0) {
+          return { ok: false, canceled: true }
+        }
+        selectedPath = result.filePaths[0]
       }
-      const raw = await fs.readFile(result.filePaths[0], 'utf8')
+      const raw = await fs.readFile(selectedPath, 'utf8')
       const parsed = JSON.parse(raw) as Partial<ExportPayload>
       if (parsed?.format !== 'tudu-deck' || typeof parsed.version !== 'number') {
         return {

@@ -92,7 +92,7 @@ export type TuduApi = {
     setRetention: (id: number, retention: number) => Promise<void>
     dueCounts: () => Promise<Record<number, number>>
     export: (id: number) => Promise<ExportResult>
-    import: () => Promise<ImportResult>
+    import: (filePath?: string) => Promise<ImportResult>
   }
   cards: {
     list: (filter: CardFilter) => Promise<Card[]>
@@ -105,6 +105,7 @@ export type TuduApi = {
   stats: {
     deck: (deckId: number) => Promise<DeckStats>
   }
+  getPathForFile: (file: File) => string
 }
 
 declare global {

@@ -42,16 +42,44 @@ export function NewDeckDialog({
     }
   }
 
-  const handleImport = async () => {
+  const [isDragging, setIsDragging] = useState(false)
+
+  const handleImport = async (filePath?: string) => {
     setSaving(true)
     setError(null)
-    const result = await api.decks.import()
+    const result = await api.decks.import(filePath)
     setSaving(false)
     if (result.ok) {
       onOpenChange(false)
       onCreated(result.deckId)
     } else if (!result.canceled) {
       setError(result.error)
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    e.dataTransfer.dropEffect = 'copy'
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+    const file = e.dataTransfer.files?.[0]
+    if (file) {
+      const path = api.getPathForFile(file)
+      if (path) {
+        handleImport(path)
+      }
     }
   }
 
@@ -87,12 +115,19 @@ export function NewDeckDialog({
 
           <Button
             variant="outline"
-            className="w-full"
-            onClick={handleImport}
+            className={`w-full transition-colors ${
+              isDragging
+                ? 'border-primary bg-primary/10 text-primary'
+                : 'border-dashed'
+            }`}
+            onClick={() => handleImport()}
             disabled={saving}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
           >
-            <Upload className="mr-2 size-4" />
-            Import from file...
+            <Upload className={`mr-2 size-4 ${isDragging ? 'animate-bounce' : ''}`} />
+            {isDragging ? 'Drop file here' : 'Import from file...'}
           </Button>
 
           {error && (

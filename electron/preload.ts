@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import type {
   Card,
   CardFilter,
@@ -28,7 +28,8 @@ const api: TuduApi = {
     dueCounts: () =>
       ipcRenderer.invoke('decks:dueCounts') as Promise<Record<number, number>>,
     export: (id) => ipcRenderer.invoke('decks:export', id) as Promise<ExportResult>,
-    import: () => ipcRenderer.invoke('decks:import') as Promise<ImportResult>,
+    import: (filePath?: string) =>
+      ipcRenderer.invoke('decks:import', filePath) as Promise<ImportResult>,
   },
   cards: {
     list: (filter: CardFilter) =>
@@ -43,6 +44,7 @@ const api: TuduApi = {
   stats: {
     deck: (deckId) => ipcRenderer.invoke('stats:deck', deckId) as Promise<DeckStats>,
   },
+  getPathForFile: (file: File) => webUtils.getPathForFile(file),
 }
 
 contextBridge.exposeInMainWorld('tudu', api)
