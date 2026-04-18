@@ -2,6 +2,9 @@
 
 Tudu is a modern, minimalist spaced repetition application for macOS. Built with a focus on simplicity and efficiency, it helps you learn and retain knowledge using the FSRS (Free Spaced Repetition Scheduler) algorithm.
 
+![screenshot1](assets/screenshot1.png)
+![screenshot2](assets/screenshot2.png)
+
 ## 💻 Requirements
 
 - **macOS 12.0 (Monterey)** or later
