@@ -3,6 +3,16 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.19](https://github.com/limboy/tudu/compare/v0.1.18...v0.1.19) - 2026-04-18
+
+### Bug Fixes
+
+- **release:** improve changelog update process in GitHub Actions workflow ([154ef74](https://github.com/limboy/tudu/commit/154ef743e88f91edde3d0cf3efe7425ed0fa32da))
+
+### Documentation
+
+- update CHANGELOG for v0.1.18 ([34b5e01](https://github.com/limboy/tudu/commit/34b5e014ced8efed4e398aa07a02d66c4e330419))
+
 ## [v0.1.18](https://github.com/limboy/tudu/compare/v0.1.17...v0.1.18) - 2026-04-18
 
 ### Bug Fixes
