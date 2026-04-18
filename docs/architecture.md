@@ -12,7 +12,7 @@ Tudu is built as a cross-platform desktop application using **Electron**. It fol
 
 ## Main Process
 
-The Main Process (`electron/main.ts`) manages the application lifecycle, window management, and native system integrations. It also handles the **SQLite database** operations using `better-sqlite3`.
+The Main Process (`electron/main.ts`) manages the application lifecycle, window management, and native system integrations. It uses `electron/window-state.ts` to persist and restore window dimensions and position. It also handles the **SQLite database** operations using `better-sqlite3`.
 
 Key responsibilities:
 - Window creation and management.

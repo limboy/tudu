@@ -8,7 +8,9 @@ title: "Data Model"
 
 # Data Model
 
-Tudu uses **SQLite** for local data storage, managed via `better-sqlite3`. The database file is located in the user's application data directory as `tudu.sqlite`.
+Tudu uses **SQLite** for primary data storage, managed via `better-sqlite3`. The database file is located in the user's application data directory as `tudu.sqlite`. 
+
+Application-level state (such as window position and size) is stored in JSON files within the same directory, e.g., `window-state-main.json`.
 
 ## Tables
 
