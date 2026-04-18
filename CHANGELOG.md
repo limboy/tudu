@@ -3,6 +3,16 @@
 All notable changes to this project are documented here.
 This file is generated automatically from [Conventional Commits](https://www.conventionalcommits.org/) — run `npm run changelog` to regenerate.
 
+## [v0.1.26](https://github.com/limboy/tudu/compare/v0.1.25...v0.1.26) - 2026-04-18
+
+### Bug Fixes
+
+- **ui:** make cards table header stick to top on scroll ([f057b1c](https://github.com/limboy/tudu/commit/f057b1c13e364c76faeaa92c590a1d0fa9a30d24))
+
+### Documentation
+
+- update CHANGELOG for v0.1.25 ([ace0fdd](https://github.com/limboy/tudu/commit/ace0fdd77568d98c93aa140af9ed6d5082ff52bb))
+
 ## [v0.1.25](https://github.com/limboy/tudu/compare/v0.1.24...v0.1.25) - 2026-04-18
 
 ### Features
